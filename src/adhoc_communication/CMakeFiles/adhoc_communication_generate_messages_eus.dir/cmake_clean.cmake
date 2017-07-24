@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/adhoc_communication_generate_messages_eus"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpCluster.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpClusterElement.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/MmControl.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/MmMapUpdate.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/MmPoint.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/CMgrDimensions.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpAuctionElement.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpFrontier.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/MmListOfPoints.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpAuction.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/CMgrRobotUpdate.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/RecvString.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/ExpFrontierElement.l"
+  "devel/share/roseus/ros/adhoc_communication/msg/MmRobotPosition.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendExpCluster.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/BroadcastString.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendMmControl.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/GetGroupState.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendCMgrRobotUpdate.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendMmRobotPosition.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendMmPoint.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/ChangeMCMembership.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendOccupancyGrid.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/ShutDown.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/BroadcastCMgrRobotUpdate.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendTwist.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/GetNeighbors.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendQuaternion.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendMmMapUpdate.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendExpAuction.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendString.l"
+  "devel/share/roseus/ros/adhoc_communication/srv/SendExpFrontier.l"
+  "devel/share/roseus/ros/adhoc_communication/manifest.l"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang )
+  include(CMakeFiles/adhoc_communication_generate_messages_eus.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

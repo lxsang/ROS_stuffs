@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/adhoc_communication_generate_messages_py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpCluster.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpClusterElement.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_MmControl.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_MmMapUpdate.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_MmPoint.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_CMgrDimensions.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpAuctionElement.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpFrontier.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_MmListOfPoints.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpAuction.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_CMgrRobotUpdate.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_RecvString.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_ExpFrontierElement.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/_MmRobotPosition.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendExpCluster.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_BroadcastString.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendMmControl.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_GetGroupState.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendCMgrRobotUpdate.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendMmRobotPosition.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendMmPoint.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_ChangeMCMembership.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendOccupancyGrid.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_ShutDown.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_BroadcastCMgrRobotUpdate.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendTwist.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_GetNeighbors.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendQuaternion.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendMmMapUpdate.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendExpAuction.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendString.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/_SendExpFrontier.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/msg/__init__.py"
+  "devel/lib/python2.7/dist-packages/adhoc_communication/srv/__init__.py"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang )
+  include(CMakeFiles/adhoc_communication_generate_messages_py.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mrsang/torob_ws/src/explorer/src/src/matrix.cpp
+matrix.h
+/home/mrsang/torob_ws/src/explorer/src/src/matrix.h
+cassert
+-
+cstdlib
+-
+algorithm
+-
+
+/home/mrsang/torob_ws/src/explorer/src/src/matrix.h
+initializer_list
+-
+matrix.cpp
+/home/mrsang/torob_ws/src/explorer/src/src/matrix.cpp
+
+/home/mrsang/torob_ws/src/explorer/src/src/munkres.cpp
+munkres.h
+/home/mrsang/torob_ws/src/explorer/src/src/munkres.h
+iostream
+-
+cmath
+-
+limits
+-
+
+/home/mrsang/torob_ws/src/explorer/src/src/munkres.h
+matrix.h
+/home/mrsang/torob_ws/src/explorer/src/src/matrix.h
+list
+-
+utility
+-
+

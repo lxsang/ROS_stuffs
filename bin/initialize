@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mkdir mia/margent/build
+(cd mia/margent/build ; cmake .. ; make)
+mv mia/margent/build/libmargent.so mia/
+
+mkdir mia/sworld/build
+(cd mia/sworld/build ; cmake .. ; make)
+mv mia/sworld/build/libsworld.so mia/
+
+catkin_make margent_msgs_generate_messages
+catkin_make torob_msgs_generate_messages
+catkin_make
+
+source devel/setup.bash

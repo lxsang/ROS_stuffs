@@ -1,0 +1,17 @@
+<package>
+  <description brief="dummy_pkg">
+
+     dummy_pkg
+
+  </description>
+  <author>Xuan Sang LE</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/dummy_pkg</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+
+</package>
+
+

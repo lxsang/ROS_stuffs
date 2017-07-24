@@ -1,0 +1,6 @@
+<launch>
+<node pkg="urg_node" type="urg_node" name="urg_node"/>
+<node pkg="rviz" type="rviz" name="rviz"
+args="-d $(find dummy_pkg)/ex_laser.rviz"/>
+<node pkg="dummy_pkg" type="dummy_laser" name="dummy_laser" />
+</launch>

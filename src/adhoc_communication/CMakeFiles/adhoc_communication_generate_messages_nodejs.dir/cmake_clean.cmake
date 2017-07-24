@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/adhoc_communication_generate_messages_nodejs"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpCluster.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpClusterElement.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/MmControl.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/MmMapUpdate.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/MmPoint.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/CMgrDimensions.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpAuctionElement.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpFrontier.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/MmListOfPoints.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpAuction.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/CMgrRobotUpdate.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/RecvString.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/ExpFrontierElement.js"
+  "devel/share/gennodejs/ros/adhoc_communication/msg/MmRobotPosition.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendExpCluster.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/BroadcastString.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendMmControl.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/GetGroupState.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendCMgrRobotUpdate.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendMmRobotPosition.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendMmPoint.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/ChangeMCMembership.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendOccupancyGrid.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/ShutDown.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/BroadcastCMgrRobotUpdate.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendTwist.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/GetNeighbors.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendQuaternion.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendMmMapUpdate.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendExpAuction.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendString.js"
+  "devel/share/gennodejs/ros/adhoc_communication/srv/SendExpFrontier.js"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang )
+  include(CMakeFiles/adhoc_communication_generate_messages_nodejs.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

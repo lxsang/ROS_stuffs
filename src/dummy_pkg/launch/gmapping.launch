@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<launch>
+<!-- roslaunch turtlebot_rviz_launchers view_navigation.launch-->
+  <!-- turtlebot -->
+  <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
+  <include file="$(find turtlebot_navigation)/launch/includes/gmapping/gmapping.launch.xml" />
+  
+  <!--arg name="scan_topic" default="scan" />
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+
+    <param name="base_frame" value="base_footprint"/>
+
+    <param name="odom_frame" value="odom"/>
+    <param name="map_update_interval" value="1.0"/>
+    <param name="maxUrange" value="3.9"/>
+    <param name="maxRange" value="5.0"/>
+    <param name="sigma" value="0.01"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.01"/>
+    <param name="astep" value="0.01"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.05"/>
+    <param name="angularUpdate" value="0.05"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="10"/>
+  
+    <param name="xmin" value="-75.0"/>
+    <param name="ymin" value="-75.0"/>
+    <param name="xmax" value="75.0"/>
+    <param name="ymax" value="75.0"/>
+
+    <param name="delta" value="0.02"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node-->
+  
+  <node pkg="robot_pose_publisher" type="robot_pose_publisher" name="robot_pose_publisher"/>
+
+  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml" />
+
+  <!-- laser -->
+  <node  pkg="urg_node" type="urg_node" name="urg_node" >
+    <param name="angle_min" value="-1.6"/>
+    <param name="angle_max" value="1.6"/>
+  </node>
+ 
+  <node pkg="tf" type="static_transform_publisher" name="laser_in_base_link"
+    args="0.03 0.0 0.0 0.0 0.0 0.0 /base_link /laser 80" />
+
+  <!-- joystick -->
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="joy_node/dev" value="/dev/input/js0"/>
+  </node>
+  <include file="$(find turtlebot_teleop)/launch/xbox360_teleop.launch"/>
+
+  <!-- torob 2 -0.5 0.2 1.2-->
+  <!--node pkg="torob" type="move" name="move">
+      <param name="robot_radius" value="0.2"/>
+      <param name="perception_distance" value="1.0"/>
+      <param name="goal_frame_id" value="odom"/>
+      <param name="init_goal_x" value="0.0" />
+      <param name="init_goal_y" value="0.0" />
+      <param name="linear_speed" value="0.2" />
+      <param name="angular_speed" value="0.5" />
+      <param name="cmd_topic" value="limbes" />
+  </node-->
+
+  <!--node pkg="torob" type="map_to_vmap" name="torob_vmap" />
+
+  <node pkg="torob" type="viewer" name="scan_vmap_view" output="screen">
+      <param name="vmap_topic" value="/scan_vmap"/>
+      <param name="scan_topic" value="/scan"/>
+      <param name="scale" value="240.0" />
+  </node-->
+
+  <!-- Web -->
+  <!--include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/-->
+</launch>

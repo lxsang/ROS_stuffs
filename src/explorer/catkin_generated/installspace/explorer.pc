@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: explorer
+Description: Description of explorer
+Version: 0.1.6
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: roscpp rospy std_msgs message_runtime adhoc_communication map_merger

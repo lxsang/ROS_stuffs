@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/adhoc_communication_generate_messages_lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpCluster.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpClusterElement.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/MmControl.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/MmMapUpdate.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/MmPoint.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/CMgrDimensions.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpAuctionElement.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpFrontier.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/MmListOfPoints.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpAuction.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/CMgrRobotUpdate.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/RecvString.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/ExpFrontierElement.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/msg/MmRobotPosition.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendExpCluster.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/BroadcastString.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendMmControl.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/GetGroupState.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendCMgrRobotUpdate.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendMmRobotPosition.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendMmPoint.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/ChangeMCMembership.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendOccupancyGrid.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/ShutDown.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/BroadcastCMgrRobotUpdate.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendTwist.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/GetNeighbors.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendQuaternion.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendMmMapUpdate.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendExpAuction.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendString.lisp"
+  "devel/share/common-lisp/ros/adhoc_communication/srv/SendExpFrontier.lisp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang )
+  include(CMakeFiles/adhoc_communication_generate_messages_lisp.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
