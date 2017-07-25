@@ -105,8 +105,8 @@ public:
                      * To use explorer node on a real robot system, add your robot names 
                      * here and at ExplorationPlanner::lookupRobotName function ... 
                      */
-                    std::string bob = "bob";
-                    std::string marley = "marley";
+                    std::string bob = "tbob";
+                    std::string marley = "astro";
                     std::string turtlebot = "turtlebot";
                     std::string joy = "joy";
                     std::string hans = "hans";
