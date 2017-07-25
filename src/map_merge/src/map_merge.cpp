@@ -59,7 +59,7 @@ MapMerge::MapMerge() : subscriptions_size_(0)
   private_nh.param<std::string>("robot_map_updates_topic",
                                 robot_map_updates_topic_, "map_updates");
   private_nh.param<std::string>("robot_namespace", robot_namespace_, "");
-  private_nh.param<std::string>("merged_map_topic", merged_map_topic, "map");
+  private_nh.param<std::string>("merged_map_topic", merged_map_topic, "map_global");
   private_nh.param<std::string>("world_frame", world_frame_, "world");
 
   /* publishing */

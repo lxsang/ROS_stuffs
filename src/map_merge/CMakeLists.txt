@@ -59,7 +59,11 @@ target_link_libraries(combine_grids ${OpenCV_LIBRARIES})
 add_executable(map_merge
   src/map_merge.cpp
 )
+add_executable(twin_merge
+  src/two_maps_merge.cpp
+)
 target_link_libraries(map_merge combine_grids ${catkin_LIBRARIES})
+target_link_libraries(twin_merge combine_grids ${catkin_LIBRARIES})
 
 #############
 ## Install ##
