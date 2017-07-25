@@ -60,10 +60,10 @@
     args="0.03 0.0 0.0 0.0 0.0 0.0 /base_link /laser 80" />
 
   <!-- joystick -->
-  <node pkg="joy" type="joy_node" name="joy_node">
+  <!--node pkg="joy" type="joy_node" name="joy_node">
     <param name="joy_node/dev" value="/dev/input/js0"/>
   </node>
-  <include file="$(find turtlebot_teleop)/launch/xbox360_teleop.launch"/>
+  <include file="$(find turtlebot_teleop)/launch/xbox360_teleop.launch"/-->
 
   <!-- torob 2 -0.5 0.2 1.2-->
   <!--node pkg="torob" type="move" name="move">
