@@ -18,6 +18,7 @@ class TwinMerge {
         ros::Publisher  global_map_pub;
         ros::Subscriber my_map_sub;
         ros::Subscriber their_map_sub;
+        int update_sequence;
         void newLocalMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map);
         void newOtherMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map);
         void mergeCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map);
@@ -31,6 +32,7 @@ TwinMerge::TwinMerge()
     global_map = nullptr;
     // publisher register
     global_map_pub = node.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
+    update_sequence = 0;
     // subscriber to the two toic
     ROS_INFO("Subscribing to %s...",robot_map_topic.c_str());
     my_map_sub = node.subscribe<nav_msgs::OccupancyGrid>(robot_map_topic, 1000,&TwinMerge::newLocalMapCallBack, this);
@@ -55,18 +57,22 @@ void TwinMerge::newLocalMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& ma
     ros::ServiceClient client;
     std::string service = "/adhoc_communication/send_map";
     client = node.serviceClient<adhoc_communication::SendOccupancyGrid>(service);
-    ROS_INFO("Calling service[%s] to send meta",service.c_str());
+    ROS_INFO("Calling service[%s] to send map",service.c_str());
     adhoc_communication::SendOccupancyGrid exchange;
     exchange.request.topic = other_robot_map_topic;
     exchange.request.map = *map;
-    exchange.request.map.header.frame_id = "astro";
+    exchange.request.map.header.frame_id = "tbob";
+    exchange.request.map.header.seq = update_sequence;
     exchange.request.dst_robot = "";
     if(client.call(exchange))
     {
         if(exchange.response.status)
+        {
             ROS_INFO("Could  send map");
+            update_sequence++;
+        }
         else
-            ROS_INFO("Problem sending meta_data");
+            ROS_INFO("Problem sending map");
     }
     else
         ROS_INFO("Could not call service to send meta");

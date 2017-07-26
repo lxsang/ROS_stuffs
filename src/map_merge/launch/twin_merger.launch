@@ -1,7 +1,7 @@
 <launch>
   <node pkg="multirobot_map_merge" type="twin_merge" respawn="false" name="twin_merge" output="screen"> <!--launch-prefix="valgrind"-->
     <param name="robot_map_topic" value="/map"/>
-    <param name="other_robot_map_topic" value="/map_other"/>
+    <param name="other_robot_map_topic" value="/map_o"/>
     <param name="merged_map_topic" value="/map_global"/>
   </node>
 </launch>
