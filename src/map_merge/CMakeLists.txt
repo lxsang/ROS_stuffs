@@ -3,6 +3,7 @@ project(multirobot_map_merge)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
+  
   roscpp
   geometry_msgs
   nav_msgs
@@ -22,11 +23,16 @@ endif()
 ## Declare ROS messages, services and actions ##
 ################################################
 # we don't have any
-
+generate_messages(
+DEPENDENCIES
+adhoc_communication
+#std_msgs # Or other packages containing msgs
+)
 ###################################
 ## catkin specific configuration ##
 ###################################
-catkin_package()
+catkin_package(
+)
 
 ###########
 ## Build ##
@@ -43,9 +49,12 @@ endif()
 ## Specify additional locations of header files
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  #${CMAKE_INSTALL_PREFIX}/include
+  /home/mrsang/torob_ws/devel/include/
   ${Boost_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   include
+   CATKIN_DEPENDS message_runtime adhoc_communication nav_msgs roscpp
 )
 
 # we want static linking for now
