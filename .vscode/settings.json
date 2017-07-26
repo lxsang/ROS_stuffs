@@ -48,6 +48,7 @@
         "utility": "cpp",
         "cmakeccompilerid.c": "cpp",
         "feature_tests.c": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "bitset": "cpp"
     }
 }
