@@ -51,7 +51,7 @@ void TwinMerge::startMerging()
 
 void TwinMerge::newLocalMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map)
 {
-    ROS_INFO("broadcasting my map");
+   ROS_INFO("broadcasting my map");
     ros::ServiceClient client;
     std::string service = "/adhoc_communication/send_map";
     client = node.serviceClient<adhoc_communication::SendOccupancyGrid>(service);
@@ -59,7 +59,7 @@ void TwinMerge::newLocalMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& ma
     adhoc_communication::SendOccupancyGrid exchange;
     exchange.request.topic = other_robot_map_topic;
     exchange.request.map = *map;
-    exchange.request.map.header.frame_id = "tbob";
+    exchange.request.map.header.frame_id = "astro";
     exchange.request.dst_robot = "";
     if(client.call(exchange))
     {
@@ -71,6 +71,7 @@ void TwinMerge::newLocalMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& ma
     else
         ROS_INFO("Could not call service to send meta");
     ROS_INFO("Star merging local map with global map");
+    
     this->mergeCallBack(map);
 }
 void TwinMerge::newOtherMapCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map)
