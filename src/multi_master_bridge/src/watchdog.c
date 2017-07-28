@@ -1,5 +1,5 @@
 
-#include "util.h"
+#include "watchdog.h"
 
 struct inet_id_ read_inet_id(const char* inf)
 {
@@ -20,17 +20,27 @@ struct inet_id_ read_inet_id(const char* inf)
     //get the netmask ip
     if(ioctl(fd, SIOCGIFNETMASK, &ifr) == 0)
         id.netmask = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr;
+    
     //calculate bc address
     id.broadcast.s_addr = id.ip.s_addr | ~ id.netmask.s_addr;
     
+    // get mac address  
     if (ioctl(fd, SIOCGIFHWADDR, &ifr) == 0) 
         memcpy(id.mac, ifr.ifr_hwaddr.sa_data, 6);
+
+    char hostname[MAX_BUFF];
+    hostname[MAX_BUFF-1] = '\0';
+    gethostname(hostname, MAX_BUFF);
+    if(strlen(hostname) > 0)
+        id.hostname = strdup(hostname);
+    else
+        id.hostname = "unknown";
 
     /*MLOG("%s \n",inet_ntoa(id.ip));
     MLOG("%s \n",inet_ntoa(id.netmask));
    
     MLOG("%s \n",inet_ntoa(id.broadcast));
-
+     printf("hostname: [%s]",hostname);
     int i=0;
     for(i;i<6;i++)
         MLOG("%.2X ", id.mac[i]);
@@ -40,7 +50,7 @@ struct inet_id_ read_inet_id(const char* inf)
     return id;
 }
 
-void notify(int interval,int port, const char* iface)
+/*void notify(int interval,int port, const char* iface)
 {
     // this should be in a thread
     while(1)
@@ -49,15 +59,18 @@ void notify(int interval,int port, const char* iface)
         send_beacon(port,iface);
         nanosleep((const struct timespec[]){{0, (long)interval*1000000L}}, NULL);
     }
-}
+}*/
 
-int send_beacon(int port, const char* iface)
+int send_beacon(int port, const char* iface, int listen_port)
 {
     int sockfd; 
     struct sockaddr_in their_addr; // connector's address information
-    int numbytes;
+    int numbytes = 0; 
+    int totalbytes;
     int broadcast = 1;
+    int hostname_size;
     int magic = MAGIC_HEADER;
+    char buffer[MAX_BUFF];
     struct inet_id_ id = read_inet_id(iface);
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
         perror("socket");
@@ -77,29 +90,34 @@ int send_beacon(int port, const char* iface)
     their_addr.sin_addr = id.broadcast;
     memset(their_addr.sin_zero, '\0', sizeof their_addr.sin_zero);
 
-    if ((numbytes=sendto(sockfd, &magic, 4, 0,
+    hostname_size = strlen(id.hostname);
+    totalbytes = 12 + hostname_size;
+    // build up the beacon
+    memcpy(buffer,&magic,sizeof(int));
+    memcpy(buffer+sizeof(int),&hostname_size,sizeof(int));
+    memcpy(buffer+2*sizeof(int),id.hostname,hostname_size);
+    memcpy(buffer+2*sizeof(int)+hostname_size,&listen_port,sizeof(int));
+    
+    // send out the beacon
+    if ((numbytes=sendto(sockfd, buffer, totalbytes, 0,
              (struct sockaddr *)&their_addr, sizeof their_addr)) == -1) {
         perror("sendto");
         close(sockfd);
         return 0;
     }
     close(sockfd);
-    MLOG("sent %d bytes to %s\n", numbytes,
-    inet_ntoa(their_addr.sin_addr));
-    if(numbytes != 4) return 0;
+
+    MLOG("sent %d bytes to %s\n", numbytes,inet_ntoa(their_addr.sin_addr));
+    if(numbytes != totalbytes)
+        return 0;
+    MLOG("Success!");
     return 1;
 }
-
-struct in_addr* sniff_beacon(int port)
+int bind_udp_socket(int port)
 {
     int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-	int numbytes;
-	struct sockaddr_storage their_addr;
-	char buf[MAX_BUFF];
-	socklen_t addr_len;
-	char s[INET6_ADDRSTRLEN];
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
 	hints.ai_socktype = SOCK_DGRAM;
@@ -108,7 +126,7 @@ struct in_addr* sniff_beacon(int port)
     snprintf(port_a, 10,"%d",port);
 	if ((rv = getaddrinfo(NULL, port_a, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return NULL;
+		return -1;
 	}
 	// loop through all the results and bind to the first we can
 	for(p = servinfo; p != NULL; p = p->ai_next) {
@@ -129,37 +147,52 @@ struct in_addr* sniff_beacon(int port)
 
 	if (p == NULL) {
 		fprintf(stderr, "listener: failed to bind socket\n");
-        close(sockfd);
-		return 0;
+        return -1;
 	}
 	freeaddrinfo(servinfo);
-
+    // wait for read in 300ms
     struct timeval read_timeout;
     read_timeout.tv_sec = 0;
-    read_timeout.tv_usec = 300000;
+    read_timeout.tv_usec = TIME_OUT_U;
     setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
 
-	MLOG("listener: waiting to recvfrom...\n");
+    return sockfd;
+}
+struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id) 
+{
+	int numbytes;
+	struct sockaddr_storage their_addr;
+	char buf[MAX_BUFF];
+	socklen_t addr_len;
+    struct beacon_t beacon;
+    beacon.status = 0;
+
+	//MLOG("listener: waiting to recvfrom...\n");
 
 	addr_len = sizeof their_addr;
-	if ((numbytes = recvfrom(sockfd, buf, MAX_BUFF-1 , 0,
-		(struct sockaddr *)&their_addr, &addr_len)) == -1) {
-		//perror("recvfrom");
-        close(sockfd);
-		return NULL;
-	}
-    close(sockfd);
+	if ((numbytes = recvfrom(sockfd, buf, MAX_BUFF , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
+        //perror("recvfrom");
+        return beacon;
+	} 
     int* v = (int*)buf;
-    if(numbytes == 4 && *v == MAGIC_HEADER)
+    // read host name
+    if(*v == MAGIC_HEADER && numbytes > 12)
     {
         struct sockaddr * sa = (struct sockaddr *)&their_addr;
         if (sa->sa_family == AF_INET) {
-		    return &(((struct sockaddr_in*)sa)->sin_addr);
+		    beacon.ip =((struct sockaddr_in*)sa)->sin_addr;
+
 	    }
         //IPV6
 	    //return &(((struct sockaddr_in6*)sa)->sin6_addr);
-        return NULL;
+         // read host name 
+        v = (int*)(buf+sizeof(int));
+        beacon.hostname = (char*)malloc(*v+1);
+        beacon.hostname[*v] = '\0';
+        memcpy(beacon.hostname,buf+8,*v);
+        v = (int*)(buf+2*sizeof(int)+*v);
+        beacon.port = *v;
+        beacon.status = 1;
+        return beacon;
     }
-    else
-        return NULL;
 }
