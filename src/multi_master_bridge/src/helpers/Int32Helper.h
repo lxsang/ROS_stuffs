@@ -3,7 +3,7 @@
 
 #include "BaseHelper.h"
 #include "std_msgs/Int32.h" 
-class Int32Helper: public Int32Helper
+class Int32Helper: public BaseHelper
 {
     public: 
         Int32Helper(){ }

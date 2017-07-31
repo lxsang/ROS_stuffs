@@ -10,26 +10,16 @@ extern "C"
 }
 #endif
 #include <signal.h>
-#include "std_msgs/Int32.h"
-#include "helpers/StringHelper.h"
+#include "helpers/DataConsumer.h"
 static int sockfd=-1;
 
-ros::Publisher dpub;
 
 void callback(struct portal_data_t d)
 {
-	//ROS_INFO("sh: %d",simple_hash("std_msgs/String"));
-	if(StringHelper::hash() == d.hash)
-	{
-		
-    	ROS_INFO("[%d] Data From: %s %d\n",d.status,d.from,d.size);
-		StringHelper hp;
-		hp.consume(d.data,d.size);
-		dpub.publish(*((std_msgs::String*)hp.msg()));
-	} else
-	{
-		ROS_INFO("Wrong message type, expect %d, but %d",StringHelper::hash(),d.hash);
-	}
+	ros::Publisher* dpub = NULL;
+	DataConsumer consumer;
+	consumer.consume(&dpub,&d);
+	ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
 }
 void sig_handle(int s)
 {
@@ -45,7 +35,6 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "portal",ros::init_options::NoSigintHandler);
 	ros::NodeHandle n;
 	ros::Publisher pub = n.advertise<std_msgs::Int32>("portal", 1000);
-	dpub = n.advertise<std_msgs::String>("portal_data", 1000);
 	ros::Rate loop_rate(10);
     signal(SIGINT, sig_handle);
     

@@ -8,13 +8,11 @@ int StringHelper::hash()
 }
 void StringHelper::rawToRosMsg(uint8_t* data)
 {
-    ROS_INFO("Converting %d", size);
     std_msgs::String* ptr = new std_msgs::String;
-    char* cs = (char*)malloc(size+1);
-    memcpy(cs,data,size);
-    cs[size] = '\0';
-    ptr->data = string(cs);
-    ROS_INFO("Got data %s",ptr->data.c_str());
+    char* cs = (char*)malloc(_rawsize+1);
+    memcpy(cs,data,_rawsize);
+    cs[_rawsize] = '\0';
+    ptr->data = string(cs); 
     _msg = (void*) ptr; 
 }
 int StringHelper::rosMsgToRaw(uint8_t** data)

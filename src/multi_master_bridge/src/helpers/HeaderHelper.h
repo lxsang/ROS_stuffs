@@ -3,7 +3,7 @@
 
 #include "BaseHelper.h"
 #include "std_msgs/Header.h" 
-class HeaderHelper: public HeaderHelper
+class HeaderHelper: public BaseHelper
 {
     public: 
         

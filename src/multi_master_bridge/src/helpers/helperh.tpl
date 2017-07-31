@@ -3,7 +3,7 @@
 
 #include "BaseHelper.h"
 #include "%0.h" 
-class %2: public %2
+class %2: public BaseHelper
 {
     public: 
         

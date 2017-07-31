@@ -69,8 +69,6 @@ int teleport_raw_data(const char*ip, int port,struct portal_data_t pdata)
 	if((sockfd = portal_request(ip, port)) != -1)
 	{
         
-        MLOG("BENGIN SENDING \n");
-        
         //numbytes = send(sockfd,&total_length,4,0);
         //if(numbytes != sizeof(int)) goto fail;
         // send header
@@ -92,13 +90,20 @@ int teleport_raw_data(const char*ip, int port,struct portal_data_t pdata)
         numbytes = send(sockfd,&pdata.hash,sizeof(int),0);
         if(numbytes != sizeof(int)) goto fail;
 
+        // send topic size
+        v = strlen(pdata.publish_to);
+        numbytes = send(sockfd,&v,sizeof(int),0);
+        if(numbytes != sizeof(int)) goto fail;
+        // send topic
+        numbytes = send(sockfd,pdata.publish_to,v,0);
+        if(numbytes != v) goto fail;
+
         // send raw size
         v = pdata.size;
         numbytes = send(sockfd,&v,sizeof(int),0);
         if(numbytes != sizeof(int)) goto fail;
          //MLOG("sent %d\n",pdata.size);
         // send raw data
-        
         numbytes = send(sockfd,pdata.data,pdata.size,0);
         if(numbytes != pdata.size) goto fail;
         // MLOG("sent raw \n");
@@ -244,6 +249,15 @@ void portal_checkin(void* rawdata)
     // read hash
     numbytes = recv(call->client,&data.hash,sizeof(int),0);
     if(numbytes != sizeof(int)) goto fail;
+
+    //topic size
+     numbytes = recv(call->client,&v,sizeof(int),0);
+    if(numbytes != sizeof(int)) goto fail;
+    //topic data
+    data.publish_to = (char*)malloc(v+1);
+    numbytes = recv(call->client,data.publish_to,v,0);
+    if(numbytes != v) goto fail;
+    data.publish_to[v] ='\0';
 
     // read data size
     numbytes = recv(call->client,&data.size,sizeof(int),0);

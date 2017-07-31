@@ -128,8 +128,16 @@ include_directories(
 add_library(wdog STATIC
   src/watchdog.c
   src/data_portal.c
-  src/helpers/BaseHelper.cpp
   src/helpers/StringHelper.cpp
+  src/helpers/Int32Helper.cpp
+  src/helpers/HeaderHelper.cpp
+  src/helpers/DataConsumer.cpp
+  src/helpers/BaseHelper.cpp
+  src/helpers/PointHelper.cpp
+  src/helpers/QuaternionHelper.cpp
+  src/helpers/PoseHelper.cpp
+  src/helpers/MapMetaDataHelper.cpp
+  src/helpers/OccupancyGridHelper.cpp
 )
 
 ## Add cmake target dependencies of the library

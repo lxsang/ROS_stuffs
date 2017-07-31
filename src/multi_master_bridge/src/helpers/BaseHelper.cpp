@@ -9,7 +9,9 @@ BaseHelper::~BaseHelper()
 portal_data_t BaseHelper::getPortalDataFor(const char* s)
 {
     portal_data_t d;
-    memcpy(d.from,s,strlen(s));
+    int sz = strlen(s);
+    memcpy(d.from,s,sz);
+    d.from[sz] = '\0';
     d.size = raw(&(d.data));
     return d;
 }

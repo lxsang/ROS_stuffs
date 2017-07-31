@@ -21,6 +21,9 @@ if [ ${#array[@]} -eq 2 ]; then
         sed -i  "s@%4@$pattern_4@g" "$i"
         echo "generated $i"
     done
+    sed -i '$ d' helper.h 
+    echo "#include \"$pattern_2.h\"">> helper.h
+    echo "#endif">> helper.h
 else
     echo "Wrong message type"
 fi

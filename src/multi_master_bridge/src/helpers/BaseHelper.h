@@ -21,14 +21,22 @@ class BaseHelper{
         int raw(uint8_t**);
         portal_data_t getPortalDataFor(const char*);
         static int hash(){};
-        void consume(uint8_t*v,int s){size=s;this->rawToRosMsg(v);};
+        void consume(uint8_t*v,int s){_rawsize=s;this->rawToRosMsg(v);};
         void consume(void*v){_msg = v;};
+        int rawsize(){return _rawsize;};
+        template <class FT> void publish(ros::Publisher*);
     protected:
-        int size;
+        int _rawsize;
         virtual void  rawToRosMsg(uint8_t*)=0;
         virtual int rosMsgToRaw(uint8_t**)=0;
         
         void* _msg;
 };
+
+template <class FT> void BaseHelper::publish(ros::Publisher* pub)
+{
+    if(_msg && pub)
+        pub->publish(*((FT*)_msg));
+}
 
 #endif

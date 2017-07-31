@@ -8,6 +8,7 @@ struct portal_data_t{
     char        from[20];
     unsigned    hash;
     int         size;
+    char*       publish_to;
     uint8_t*    data;
     int         status;
 };
