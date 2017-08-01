@@ -102,7 +102,7 @@ int teleport_raw_data(const char*ip, int port,struct portal_data_t pdata)
         v = pdata.size;
         numbytes = send(sockfd,&v,sizeof(int),0);
         if(numbytes != sizeof(int)) goto fail;
-         //MLOG("sent %d\n",pdata.size);
+        // MLOG("sent %d\n",pdata.size);
         // send raw data
         numbytes = send(sockfd,pdata.data,pdata.size,0);
         if(numbytes != pdata.size) goto fail;
@@ -262,17 +262,20 @@ void portal_checkin(void* rawdata)
     // read data size
     numbytes = recv(call->client,&data.size,sizeof(int),0);
     if(numbytes != sizeof(int)) goto fail;
-    //MLOG("data size ok %d\n",v);
+    //MLOG("data size ok %d\n",data.size);
     
     // read all remain raw data
     data.data = (uint8_t*)malloc(data.size);
-    numbytes = recv(call->client,data.data,data.size,0);
+    int chunk = 0;
+    numbytes = 0;
+    while((chunk = recv(call->client,data.data+numbytes,data.size - numbytes,0))>0 && numbytes != data.size)
+        numbytes += chunk;
     if(numbytes != data.size) goto fail;
     //data.data[v] = '\0'; 
     //MLOG("data %s\n",data.data);
     data.status = 1;
     
-    //MLOG("%d bytes read. send back ack %d\n");
+    //MLOG("%d bytes read. send back ack %d\n",numbytes);
     // send header
     v = MAGIC_HEADER;
     numbytes = send(call->client,&v,sizeof(int),0);

@@ -48,7 +48,7 @@ int OccupancyGridHelper::rosMsgToRaw(uint8_t** data)
   
     if(hraw) free(hraw);
     if(iraw) free(iraw);
-    
-    return len + v;
+   
+    return len ;
 }
 

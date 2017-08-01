@@ -162,10 +162,18 @@ add_executable(portal
 add_executable(feed
   src/feed.cpp
 )
+add_executable(udp_broadcast
+  src/udp_broadcast.cpp
+)
+add_executable(udp_dog
+  src/udp_dog.cpp
+)
 target_link_libraries(beacon wdog ${catkin_LIBRARIES})
 target_link_libraries(dog wdog ${catkin_LIBRARIES})
 target_link_libraries(portal wdog ${catkin_LIBRARIES})
 target_link_libraries(feed wdog ${catkin_LIBRARIES})
+target_link_libraries(udp_broadcast wdog ${catkin_LIBRARIES})
+target_link_libraries(udp_dog wdog ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
