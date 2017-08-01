@@ -1,5 +1,5 @@
 
-#include "util.h"
+#include "watchdog.h"
 
 struct inet_id_ read_inet_id(const char* inf)
 {
