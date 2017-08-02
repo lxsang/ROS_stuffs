@@ -23,6 +23,7 @@ void neighbors_discover(const multi_master_bridge::NeighbourId::ConstPtr& msg)
 	{
 		if(t.sec - it->second->header.stamp.sec > EXPIRED_TIME)
 		{
+			neighbors.erase(it);
 			ROS_INFO("Remove %s from neighbours",it->second->name.c_str());
 		} else
 		{

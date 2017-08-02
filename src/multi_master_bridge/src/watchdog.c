@@ -289,6 +289,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
     while((chunk=sendto(sockfd, buffer+numbytes, pragment, 0,(struct sockaddr *)&their_addr, sizeof their_addr))>0 && numbytes != total_size)
     {
         numbytes+= chunk;
+        
         if(total_size - numbytes < pragment) 
             pragment = total_size - numbytes;
     }
@@ -306,20 +307,41 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
         return -1;
 }
 
-struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
+struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id, int *alive)
 {
     int numbytes;
 	struct sockaddr_storage their_addr;
-	uint8_t header[8];
+	//uint8_t header[8];
 	socklen_t addr_len;
     struct portal_data_t pdata;
     struct in_addr from;
     pdata.status = 0;
 	//MLOG("listener: waiting to recvfrom...\n");
 	addr_len = sizeof their_addr;
+
+     uint8_t* buffer = (uint8_t*) malloc(PRAGMENT_SIZE);
+    numbytes = 0;
+    int chunk = 0;
+    uint8_t* rawdata = (uint8_t*) malloc(PRAGMENT_SIZE);
+    int total_lenght = PRAGMENT_SIZE;
+    int pragment = PRAGMENT_SIZE;
+    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0 && *alive)
+    {
+        if(chunk == -1) continue;
+        //sa = (struct sockaddr *)&their_addr;
+        //if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
+        if(numbytes + chunk > total_lenght)
+            rawdata = (uint8_t*)realloc(rawdata, total_lenght + PRAGMENT_SIZE);
+        memcpy(rawdata+numbytes,buffer,chunk);
+        numbytes += chunk;
+        //MLOG("received %d bytes\n",chunk);
+    }
+     MLOG("Received %d bytes\n", numbytes);
+     close(sockfd);
+     return pdata;
     //struct in_addr
     // first read header
-	if ((numbytes = recvfrom(sockfd, header ,8 , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
+	/*if ((numbytes = recvfrom(sockfd, header ,8 , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
         //perror("recvfrom");
         return pdata;
 	} 
@@ -335,13 +357,13 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
         if(from.s_addr == id.ip.s_addr)
         {
             MLOG("Data sending by me, ignore it \n");
-            return pdata;
+           // return pdata;
         }
         //allocate buffer for data
-        uint8_t* buffer = (uint8_t*) malloc(size);
+       
         numbytes = 0;
         int chunk = 0;
-        while((chunk = recvfrom(sockfd, buffer+numbytes ,size-numbytes , 0, (struct sockaddr *)&their_addr, &addr_len)) > 0 && numbytes != size)
+        while((chunk = recvfrom(sockfd, buffer+numbytes ,size-numbytes , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0 && numbytes != size)
         {
             sa = (struct sockaddr *)&their_addr;
             if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
@@ -373,7 +395,7 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
         if(buffer) free(buffer);
         return pdata;
     }
-    return pdata;
+    return pdata;*/
 }
 struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id) 
 {
