@@ -307,7 +307,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
         return -1;
 }
 
-struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id, int *alive)
+struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
 {
     int numbytes;
 	struct sockaddr_storage their_addr;
@@ -325,7 +325,7 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id, int *ali
     uint8_t* rawdata = (uint8_t*) malloc(PRAGMENT_SIZE);
     int total_lenght = PRAGMENT_SIZE;
     int pragment = PRAGMENT_SIZE;
-    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0 && *alive)
+    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0)
     {
         if(chunk == -1) continue;
         //sa = (struct sockaddr *)&their_addr;

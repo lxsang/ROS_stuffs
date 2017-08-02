@@ -43,6 +43,6 @@ struct inet_id_ read_inet_id(const char* );
 int send_beacon(int,const char*,int);
 int bind_udp_socket(int);
 struct beacon_t sniff_beacon(int, struct inet_id_);
-struct portal_data_t udp_portal_checkin(int, struct inet_id_ id, int* alive);
+struct portal_data_t udp_portal_checkin(int, struct inet_id_ id);
 int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata);
 #endif 
