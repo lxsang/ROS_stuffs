@@ -580,6 +580,7 @@
         "cstdint.hpp": "c",
         "stdint.h": "c",
         "tbb_stddef.h": "c",
-        "ptypes.h": "c"
+        "ptypes.h": "c",
+        "object_pool.hpp": "c"
     }
 }

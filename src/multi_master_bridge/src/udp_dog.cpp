@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 	{
 		while (ros::ok())
 		{
+			ROS_INFO("Wait for data");
 			struct portal_data_t d = udp_portal_checkin(sockfd,id);
 			if(d.status)
 			{
