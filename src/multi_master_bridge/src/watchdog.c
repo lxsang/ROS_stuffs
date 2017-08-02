@@ -242,7 +242,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
     int numbytes = 0; 
     int broadcast = 1;
     int total_size = 0;
-    uint8_t header[8];
+    //uint8_t header[8];
     struct inet_id_ id = read_inet_id(iface);
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
         perror("socket");
@@ -264,23 +264,24 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
 
     //numbytes = send(sockfd,&total_length,4,0);
         //if(numbytes != sizeof(int)) goto fail;
-    total_size = 3*sizeof(int) + strlen(pdata.publish_to) + pdata.size;
+    total_size = 5*sizeof(int) + strlen(pdata.publish_to) + pdata.size;
     int v = MAGIC_HEADER;
-     memcpy(header,&v, sizeof(int));
-     memcpy(header+sizeof(int),&total_size,sizeof(int));
     
      // send header
-    numbytes=sendto(sockfd, header, 8, 0,(struct sockaddr *)&their_addr, sizeof their_addr);
-    if(numbytes != 8) goto fail;
+    //numbytes=sendto(sockfd, header, 8, 0,(struct sockaddr *)&their_addr, sizeof their_addr);
+    //if(numbytes != 8) goto fail;
    
     //allocate sending buffer
     uint8_t * buffer = (uint8_t*) malloc(total_size);
-    memcpy(buffer,&pdata.hash,sizeof(int));
-     v = strlen(pdata.publish_to);
+    memcpy(buffer,&v, sizeof(int));
+    v = total_size - 8;
     memcpy(buffer+sizeof(int),&v,sizeof(int));
-    memcpy(buffer+2*sizeof(int),pdata.publish_to,v);
-    memcpy(buffer+2*sizeof(int)+v,&pdata.size, sizeof(int));
-    memcpy(buffer+3*sizeof(int)+v,pdata.data, pdata.size);
+    memcpy(buffer+2*sizeof(int),&pdata.hash,sizeof(int));
+     v = strlen(pdata.publish_to);
+    memcpy(buffer+3*sizeof(int),&v,sizeof(int));
+    memcpy(buffer+4*sizeof(int),pdata.publish_to,v);
+    memcpy(buffer+4*sizeof(int)+v,&pdata.size, sizeof(int));
+    memcpy(buffer+5*sizeof(int)+v,pdata.data, pdata.size);
     //MLOG("sent %d to %\n",v);
 
     int chunk = 0;
@@ -292,6 +293,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
         
         if(total_size - numbytes < pragment) 
             pragment = total_size - numbytes;
+        //nanosleep((const struct timespec[]){{0, 30000000L}}, NULL);
     }
     if(numbytes != total_size) goto fail;
     if(buffer) free(buffer);
@@ -340,12 +342,13 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
                 magic = 0;
                 continue; //discard since it is not the data we want;
             }
+            MLOG("Data size%d\n",size);
             sa = (struct sockaddr *)&their_addr;
             from = ((struct sockaddr_in*)sa)->sin_addr;
             if(from.s_addr == id.ip.s_addr)
             {
                 MLOG("Data sending by me, ignore it \n");
-           // return pdata;
+                //return pdata;
             }
         }
         sa = (struct sockaddr *)&their_addr;

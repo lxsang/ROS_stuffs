@@ -581,6 +581,23 @@
         "stdint.h": "c",
         "tbb_stddef.h": "c",
         "ptypes.h": "c",
-        "object_pool.hpp": "c"
+        "object_pool.hpp": "c",
+        "allocator.hpp": "c",
+        "demangle.hpp": "c",
+        "back_extended_deque.hpp": "c",
+        "deque.hpp": "c",
+        "front_extended_deque.hpp": "c",
+        "cons.hpp": "c",
+        "nil.hpp": "c",
+        "end_impl.hpp": "c",
+        "vector10.hpp": "c",
+        "queue.ipp": "c",
+        "item.hpp": "c",
+        "set0.hpp": "c",
+        "size.hpp": "c",
+        "vector0.hpp": "c",
+        "array_traits.hpp": "c",
+        "impl.h": "c",
+        "time.h": "c"
     }
 }

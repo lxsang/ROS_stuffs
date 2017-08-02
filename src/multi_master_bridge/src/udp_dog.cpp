@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	            ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
 			}
 			//ros::spinOnce();
-			loop_rate.sleep();
+			//loop_rate.sleep();
 		}
 	}
 	return 0;
