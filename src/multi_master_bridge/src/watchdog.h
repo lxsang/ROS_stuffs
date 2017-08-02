@@ -22,7 +22,7 @@
 #define TIME_OUT_U 300000
 // four bytes magic header
 #define  MAGIC_HEADER 0xAB2F374A
-#define  PRAGMENT_SIZE 65500
+#define  PRAGMENT_SIZE 1024
 //#define  MAX_DGRAM_DATA 65500
 struct inet_id_ {
     struct in_addr ip;

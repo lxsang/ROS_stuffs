@@ -337,6 +337,7 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
             memcpy(&size,buffer+sizeof(int), sizeof(int));
             if(magic != MAGIC_HEADER) 
             {
+                MLOG("MAGIC header is wrong %d %d %d\n", magic, MAGIC_HEADER,size);
                 magic = 0;
                 continue; //discard since it is not the data we want;
             }
@@ -349,7 +350,10 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
             }
         }
         sa = (struct sockaddr *)&their_addr;
-        if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
+        if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr){
+            MLOG("this data is not for me\n");
+            continue;
+        } 
         if(numbytes + chunk > total_lenght)
         {
             total_lenght += PRAGMENT_SIZE;
