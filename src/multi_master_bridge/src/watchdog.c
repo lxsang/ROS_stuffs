@@ -325,9 +325,9 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
     uint8_t* rawdata = (uint8_t*) malloc(PRAGMENT_SIZE);
     int total_lenght = PRAGMENT_SIZE;
     int pragment = PRAGMENT_SIZE;
-    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0)
+    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) > 0)
     {
-        if(chunk == -1) continue;
+        //if(chunk == -1) continue;
         //sa = (struct sockaddr *)&their_addr;
         //if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
         if(numbytes + chunk > total_lenght)
@@ -336,8 +336,9 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
         numbytes += chunk;
         //MLOG("received %d bytes\n",chunk);
     }
-     MLOG("Received %d bytes\n", numbytes);
-     close(sockfd);
+    if(numbytes > 0)
+        MLOG("Received %d bytes\n", numbytes);
+     //close(sockfd);
      return pdata;
     //struct in_addr
     // first read header

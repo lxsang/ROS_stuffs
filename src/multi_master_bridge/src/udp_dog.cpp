@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	            consumer.consume(&dpub,&d);
 	            ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
 			}
-			ros::spinOnce();
+			//ros::spinOnce();
 			loop_rate.sleep();
 		}
 	}
