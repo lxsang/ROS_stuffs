@@ -326,15 +326,15 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
     int total_lenght = PRAGMENT_SIZE;
     int pragment = PRAGMENT_SIZE;
     int magic = 0;
+    int size;
     struct sockaddr * sa;
     while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0)
     {
-        //if(chunk == -1) continue;
-        //sa = (struct sockaddr *)&their_addr;
-        //if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
+        if(chunk == -1) continue;
         if(magic == 0)
         {
             memcpy(&magic,buffer, sizeof(int));
+            memcpy(&size,buffer+sizeof(int), sizeof(int));
             if(magic != MAGIC_HEADER) 
             {
                 magic = 0;
@@ -342,83 +342,47 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
             }
             sa = (struct sockaddr *)&their_addr;
             from = ((struct sockaddr_in*)sa)->sin_addr;
-            /*if(from.s_addr == id.ip.s_addr)
+            if(from.s_addr == id.ip.s_addr)
             {
                 MLOG("Data sending by me, ignore it \n");
            // return pdata;
-            }*/
+            }
         }
         sa = (struct sockaddr *)&their_addr;
         if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
         if(numbytes + chunk > total_lenght)
         {
-            total_lenght+= PRAGMENT_SIZE;
-            rawdata = (uint8_t*)realloc(rawdata, total_lenght );
+            total_lenght += PRAGMENT_SIZE;
+            rawdata = (uint8_t*)realloc(rawdata,total_lenght );
         }
         memcpy(rawdata+numbytes,buffer,chunk);
         numbytes += chunk;
-        //MLOG("received %d bytes\n",chunk);
     }
-     MLOG("Received %d bytes\n", numbytes);
-     //close(sockfd);
-     return pdata;
-    //struct in_addr
-    // first read header
-	/*if ((numbytes = recvfrom(sockfd, header ,8 , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
-        //perror("recvfrom");
-        return pdata;
-	} 
-    if(numbytes != 8) return pdata;
-    int magic, size;
-    memcpy(&magic, header,sizeof(int));
-    memcpy(&size,header+sizeof(int), sizeof(int));
-    // read host name
-    if(magic == MAGIC_HEADER)
+    if(buffer) free(buffer);
+    if(numbytes != size + 8)
     {
-        struct sockaddr * sa = (struct sockaddr *)&their_addr;
-        from = ((struct sockaddr_in*)sa)->sin_addr;
-        if(from.s_addr == id.ip.s_addr)
-        {
-            MLOG("Data sending by me, ignore it \n");
-           // return pdata;
-        }
-        //allocate buffer for data
-       
-        numbytes = 0;
-        int chunk = 0;
-        while((chunk = recvfrom(sockfd, buffer+numbytes ,size-numbytes , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0 && numbytes != size)
-        {
-            sa = (struct sockaddr *)&their_addr;
-            if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
-            numbytes += chunk;
-            //MLOG("received %d bytes\n",chunk);
-        }
-        
-        if(numbytes != size)
-        {
-            MLOG("total byte read %d/%d\n",numbytes,size);
-            if(buffer) free(buffer);
-            return pdata;
-        }
-        // parse data
-        memcpy(&pdata.hash,buffer,sizeof(int));
-        int v  ;
-        memcpy(&v,buffer+sizeof(int),sizeof(int));
-        pdata.publish_to =(char*) malloc(v+1);
-        memcpy(pdata.publish_to,buffer+2*sizeof(int),v);
-        pdata.publish_to[v] = '\0';
-        memcpy(&pdata.size,buffer+2*sizeof(int)+v, sizeof(int));
-        pdata.data =(uint8_t*) malloc(pdata.size);
-        memcpy(pdata.data,buffer+3*sizeof(int)+v, pdata.size);
-        pdata.status = 1;
-        char* addr = inet_ntoa(from);
-        v = strlen(addr);
-        memcpy(pdata.from,addr, v);
-        pdata.from[v] = '\0';
-        if(buffer) free(buffer);
+        MLOG("Missing data. Received %d bytes\n", numbytes);
+        //close(sockfd);
         return pdata;
     }
-    return pdata;*/
+    buffer = rawdata+8;
+     // parse data
+    memcpy(&pdata.hash,buffer,sizeof(int));
+    int v  ;
+    memcpy(&v,buffer+sizeof(int),sizeof(int));
+    pdata.publish_to =(char*) malloc(v+1);
+    memcpy(pdata.publish_to,buffer+2*sizeof(int),v);
+    pdata.publish_to[v] = '\0';
+    memcpy(&pdata.size,buffer+2*sizeof(int)+v, sizeof(int));
+    pdata.data =(uint8_t*) malloc(pdata.size);
+    memcpy(pdata.data,buffer+3*sizeof(int)+v, pdata.size);
+    pdata.status = 1;
+    char* addr = inet_ntoa(from);
+    v = strlen(addr);
+    memcpy(pdata.from,addr, v);
+    pdata.from[v] = '\0';
+    if(rawdata) free(rawdata);
+    return pdata;
 }
 struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id) 
 {
