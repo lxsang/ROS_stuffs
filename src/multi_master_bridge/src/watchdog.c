@@ -281,7 +281,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
     memcpy(buffer+2*sizeof(int),pdata.publish_to,v);
     memcpy(buffer+2*sizeof(int)+v,&pdata.size, sizeof(int));
     memcpy(buffer+3*sizeof(int)+v,pdata.data, pdata.size);
-    //MLOG("sent %d\n",v);
+    //MLOG("sent %d to %\n",v);
 
     int chunk = 0;
     int pragment = total_size < PRAGMENT_SIZE?total_size:PRAGMENT_SIZE;
@@ -296,7 +296,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
     if(numbytes != total_size) goto fail;
     if(buffer) free(buffer);
     close(sockfd);
-    MLOG("sent %d\n",numbytes);
+    MLOG("sent %d to %s\n",numbytes, inet_ntoa(id.broadcast) );
     return 0;
 
     fail:
@@ -325,11 +325,31 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
     uint8_t* rawdata = (uint8_t*) malloc(PRAGMENT_SIZE);
     int total_lenght = PRAGMENT_SIZE;
     int pragment = PRAGMENT_SIZE;
+    int magic = 0;
+    struct sockaddr * sa;
     while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0)
     {
         if(chunk == -1) continue;
         //sa = (struct sockaddr *)&their_addr;
         //if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
+        if(magic == 0)
+        {
+            memcpy(&magic,buffer, sizeof(int));
+            if(magic != MAGIC_HEADER) 
+            {
+                magic = 0;
+                continue; //discard since it is not the data we want;
+            }
+            sa = (struct sockaddr *)&their_addr;
+            from = ((struct sockaddr_in*)sa)->sin_addr;
+            /*if(from.s_addr == id.ip.s_addr)
+            {
+                MLOG("Data sending by me, ignore it \n");
+           // return pdata;
+            }*/
+        }
+        sa = (struct sockaddr *)&their_addr;
+        if( ((struct sockaddr_in*)sa)->sin_addr.s_addr != from.s_addr) continue;
         if(numbytes + chunk > total_lenght)
             rawdata = (uint8_t*)realloc(rawdata, total_lenght + PRAGMENT_SIZE);
         memcpy(rawdata+numbytes,buffer,chunk);
@@ -337,7 +357,7 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
         //MLOG("received %d bytes\n",chunk);
     }
      MLOG("Received %d bytes\n", numbytes);
-     close(sockfd);
+     //close(sockfd);
      return pdata;
     //struct in_addr
     // first read header

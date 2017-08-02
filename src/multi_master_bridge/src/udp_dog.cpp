@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 	{
 		while (ros::ok())
 		{
+			ROS_INFO("Wait for data");
 			struct portal_data_t d = udp_portal_checkin(sockfd,id);
 			if(d.status)
 			{
@@ -44,7 +45,7 @@ int main(int argc, char **argv)
 	            consumer.consume(&dpub,&d);
 	            ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
 			}
-			ros::spinOnce();
+			//ros::spinOnce();
 			loop_rate.sleep();
 		}
 	}
