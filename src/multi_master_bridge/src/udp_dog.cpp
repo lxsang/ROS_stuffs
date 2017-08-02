@@ -13,7 +13,6 @@ extern "C"
 #include "helpers/helper.h"
 #include "helpers/DataConsumer.h"
 static int sockfd = -1;
-int alive = 1;
 
 void sig_handle(int s)
 {
@@ -21,7 +20,7 @@ void sig_handle(int s)
 		close(sockfd);
 	ROS_INFO("End sniffing");
 	ros::shutdown();
-	alive = 0;
+	exit(0);
 }
 
 int main(int argc, char **argv)

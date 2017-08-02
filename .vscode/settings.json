@@ -576,6 +576,10 @@
         "stringhelper.h": "c",
         "safe_mode.hpp": "c",
         "multi_index_container.hpp": "c",
-        "udp_dog.cpp": "c"
+        "udp_dog.cpp": "c",
+        "cstdint.hpp": "c",
+        "stdint.h": "c",
+        "tbb_stddef.h": "c",
+        "ptypes.h": "c"
     }
 }
