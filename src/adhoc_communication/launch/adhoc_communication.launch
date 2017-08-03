@@ -17,7 +17,7 @@
     <arg name="tx_power" default="" />
     <arg name="enable_cooperative_relaying" default="true" />
     <arg name="num_link_retrans" default="2" />
-    <arg name="num_e2e_retrans" default="10" /> 
+    <arg name="num_e2e_retrans" default="3" /> 
 <arg name="nack_threshold" default="10" />    
 
 

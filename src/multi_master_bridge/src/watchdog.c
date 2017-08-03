@@ -324,16 +324,16 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
      uint8_t* buffer = (uint8_t*) malloc(PRAGMENT_SIZE);
     numbytes = 0;
     int chunk = 0;
-    uint8_t* rawdata = (uint8_t*) malloc(PRAGMENT_SIZE);
-    int total_lenght = PRAGMENT_SIZE;
+    uint8_t* rawdata = (uint8_t*) malloc(500*PRAGMENT_SIZE);
+    int total_lenght = 500*PRAGMENT_SIZE;
     int pragment = PRAGMENT_SIZE;
     int magic = 0;
     int size;
     struct sockaddr * sa;
-    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) != 0)
+    while((chunk = recvfrom(sockfd, buffer ,pragment , 0, (struct sockaddr *)&their_addr, &addr_len)) > 0)
     {
-        if(chunk == -1) continue;
-        if(magic == 0)
+        //if(chunk == -1) continue;
+        /*if(magic == 0)
         {
             memcpy(&magic,buffer, sizeof(int));
             memcpy(&size,buffer+sizeof(int), sizeof(int));
@@ -359,16 +359,17 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
         } 
         if(numbytes + chunk > total_lenght)
         {
-            total_lenght += PRAGMENT_SIZE;
+            total_lenght += 100*PRAGMENT_SIZE;
             rawdata = (uint8_t*)realloc(rawdata,total_lenght );
         }
-        memcpy(rawdata+numbytes,buffer,chunk);
+        memcpy(rawdata+numbytes,buffer,chunk);*/
         numbytes += chunk;
     }
     if(buffer) free(buffer);
     if(numbytes != size + 8)
     {
-        MLOG("Missing data. Received %d bytes\n", numbytes);
+        if(numbytes > 0)
+            MLOG("Missing data. Received %d bytes\n", numbytes);
         //close(sockfd);
         return pdata;
     }
