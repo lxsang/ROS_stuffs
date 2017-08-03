@@ -153,14 +153,14 @@ add_library(wdog STATIC
 add_executable(beacon
   src/beacon.cpp
 )
-add_executable(dog
-  src/dog.cpp
+add_executable(robot_discover
+  src/robot_discover.cpp
 )
 add_executable(portal
   src/portal.cpp
 )
-add_executable(feed
-  src/feed.cpp
+add_executable(map_feeding
+  src/map_feeding.cpp
 )
 add_executable(udp_broadcast
   src/udp_broadcast.cpp
@@ -169,9 +169,9 @@ add_executable(udp_dog
   src/udp_dog.cpp
 )
 target_link_libraries(beacon wdog ${catkin_LIBRARIES})
-target_link_libraries(dog wdog ${catkin_LIBRARIES})
+target_link_libraries(robot_discover wdog ${catkin_LIBRARIES})
 target_link_libraries(portal wdog ${catkin_LIBRARIES})
-target_link_libraries(feed wdog ${catkin_LIBRARIES})
+target_link_libraries(map_feeding wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_broadcast wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_dog wdog ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix

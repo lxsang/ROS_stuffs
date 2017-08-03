@@ -18,10 +18,10 @@ void DataConsumer::consume(ros::Publisher** pub,portal_data_t* pd)
 {
    
     if(pd->hash == StringHelper::hash())
-         INPUT<std_msgs::String,StringHelper>(pub,pd);
+        INPUT<std_msgs::String,StringHelper>(pub,pd);
 
     else  if(pd->hash == Int32Helper::hash())
-         INPUT<std_msgs::Int32,Int32Helper>(pub,pd);
+        INPUT<std_msgs::Int32,Int32Helper>(pub,pd);
 
     else  if(pd->hash == HeaderHelper::hash())
         INPUT<std_msgs::Header,HeaderHelper>(pub,pd);
