@@ -293,7 +293,7 @@ int upd_data_broadcast(int port, const char* iface, struct portal_data_t pdata)
         
         if(total_size - numbytes < pragment) 
             pragment = total_size - numbytes;
-        //nanosleep((const struct timespec[]){{0, 30000000L}}, NULL);
+        //nanosleep((const struct timespec[]){{0, 30000L}}, NULL);
     }
     if(numbytes != total_size) goto fail;
     if(buffer) free(buffer);
@@ -400,19 +400,25 @@ struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id)
 	socklen_t addr_len;
     struct beacon_t beacon;
     beacon.status = 0;
-
+    struct sockaddr* sa;
 	//MLOG("listener: waiting to recvfrom...\n");
 
 	addr_len = sizeof their_addr;
 	if ((numbytes = recvfrom(sockfd, buf, MAX_BUFF , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
         //perror("recvfrom");
         return beacon;
-	} 
+	}
+    sa = (struct sockaddr *)&their_addr;
+    if(((struct sockaddr_in*)sa)->sin_addr.s_addr == id.ip.s_addr)
+    {
+        //MLOG("Beacon sending by me, ignore it \n");
+        return beacon;
+    }
     int* v = (int*)buf;
     // read host name
     if(*v == MAGIC_HEADER && numbytes > 12)
     {
-        struct sockaddr * sa = (struct sockaddr *)&their_addr;
+        sa = (struct sockaddr *)&their_addr;
         if (sa->sa_family == AF_INET) {
 		    beacon.ip =((struct sockaddr_in*)sa)->sin_addr;
 

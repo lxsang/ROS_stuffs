@@ -21,17 +21,21 @@ void sig_handle(int s)
 	ROS_INFO("End sniffing");
 	ros::shutdown();
 }
-
+int listen_to;
+std::string listen_interface;
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "watch_dog",ros::init_options::NoSigintHandler);
-	signal(SIGINT, sig_handle);
 	ros::NodeHandle n;
+	n.param<int>("/robot_discover/listen_to", listen_to, 9191);
+    n.param<std::string>("/robot_discover/listen_interface",listen_interface, "wlan0");
+	signal(SIGINT, sig_handle);
+	
 	ros::Publisher dog_pub = n.advertise<multi_master_bridge::NeighbourId>("new_robot", 1000);
 	ros::Rate loop_rate(10);
 
-	sockfd = bind_udp_socket(9196);
-	struct inet_id_ id = read_inet_id("wlp2s0");
+	sockfd = bind_udp_socket(listen_to);
+	struct inet_id_ id = read_inet_id(listen_interface.c_str());
 	if(sockfd > 0)
 	{
 		while (ros::ok())
@@ -46,7 +50,7 @@ int main(int argc, char **argv)
 				msg.ip = inet_ntoa(a.ip);
 				msg.name = std::string(a.hostname);
 				msg.port = a.port;
-				ss << " Found new neighbour at ";
+				ss << " Found neighbour at ";
 				ss << msg.ip;
 				ss << " name " <<msg.name;
 				ss << " listen on:" << msg.port;

@@ -24,7 +24,7 @@ void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     struct portal_data_t d = hp.getPortalDataFor("");
     d.publish_to = "/other_map";
     d.hash = OccupancyGridHelper::hash();
-    ROS_INFO("broad casting the map");
+    ROS_INFO("broadcasting the map");
     upd_data_broadcast(9196,"wlp2s0",d);
     // free allocated memory
     if(d.data) free(d.data);

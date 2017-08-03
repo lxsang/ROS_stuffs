@@ -12,24 +12,18 @@ extern "C"
 #include "helpers/helper.h"
 #include "multi_master_bridge/NeighbourId.h"
 #define EXPIRED_TIME 5 //s
+
 ros::Publisher pub;
 std::map<string,multi_master_bridge::NeighbourId*> neighbors;
+std::string publish_to,_interface;
+static int sockfd=-1;
+int robot_decay_time_s;
+struct inet_id_ id;
+
 void neighbors_discover(const multi_master_bridge::NeighbourId::ConstPtr& msg)
 { 
 	neighbors[msg->ip] = new multi_master_bridge::NeighbourId(*msg);
 	// remove all unactive neighbours
-	ros::Time t = ros::Time::now();
-	for(std::map<string,multi_master_bridge::NeighbourId*>::iterator it = neighbors.begin(); it != neighbors.end(); it++)
-	{
-		if(t.sec - it->second->header.stamp.sec > EXPIRED_TIME)
-		{
-			neighbors.erase(it);
-			ROS_INFO("Remove %s from neighbours",it->second->name.c_str());
-		} else
-		{
-			ROS_INFO("Neighbour %s is alive",it->second->name.c_str());
-		}
-	}
 }
 void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
@@ -41,8 +35,8 @@ void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 		
 		nav_msgs::OccupancyGrid* m = new nav_msgs::OccupancyGrid(*msg);
 		hp.consume((void*)m);
-    	struct portal_data_t d = hp.getPortalDataFor("10.1.16.45");
-		d.publish_to = "/other_map";
+    	struct portal_data_t d = hp.getPortalDataFor(inet_ntoa(id.ip));
+		d.publish_to = (char*)publish_to.c_str();
 		d.hash = OccupancyGridHelper::hash();
 		ROS_INFO("Feed map to %s:%d",it->second->ip.c_str(),it->second->port);
 		teleport_raw_data(it->second->ip.c_str(),it->second->port,d);
@@ -53,16 +47,35 @@ void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 		//pub.publish(m);
 	}
 }
-static int sockfd=-1;
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "feed");
 	ros::NodeHandle n;
+	n.param<std::string>("/map_exchange/publish_to",publish_to, "/other_map");
+	n.param<int>("/map_exchange/robot_decay_time_s",robot_decay_time_s, 5);
+	n.param<std::string>("/map_exchange/network_interface",_interface, "wlan0");
 	//pub = n.advertise<nav_msgs::OccupancyGrid>("other_map", 1000);
 	ros::Subscriber sub = n.subscribe<multi_master_bridge::NeighbourId>("/new_robot", 50,&neighbors_discover);
 	ros::Subscriber sub1 = n.subscribe<nav_msgs::OccupancyGrid>("/map", 100,&send_newmap);
 	ros::Rate loop_rate(10);
-    ros::spin();
+	id = read_inet_id(_interface.c_str());
+	ROS_INFO("My address %s on %s",inet_ntoa(id.ip), _interface.c_str());
+	while(ros::ok())
+	{
+		ros::Time t = ros::Time::now();
+		for(std::map<string,multi_master_bridge::NeighbourId*>::iterator it = neighbors.begin(); it != neighbors.end(); it++)
+		{
+			if(t.sec - it->second->header.stamp.sec > robot_decay_time_s)
+			{
+				ROS_INFO("Remove %s from neighbours",it->second->name.c_str());
+				neighbors.erase(it);
+			} 
+		}
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
+    
 
 	return 0;
     

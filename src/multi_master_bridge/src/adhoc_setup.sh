@@ -25,7 +25,7 @@ sudo ip link set $iface up
 
 echo "Set IP to $ip"
 sudo ip addr flush $iface
-sudo ip addr add $ip/24 broadcast 192.168.1.255 dev $iface
+sudo ip addr add $ip/24  broadcast 192.168.1.255 dev $iface
 
 sudo ip link set $iface down
 sleep 2

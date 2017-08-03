@@ -12,7 +12,7 @@ extern "C"
 #include <signal.h>
 #include "helpers/DataConsumer.h"
 static int sockfd=-1;
-
+ros::Publisher pub;
 
 void callback(struct portal_data_t d)
 {
@@ -27,6 +27,9 @@ void sig_handle(int s)
 		close(sockfd);
     //sockfd = -1;
 	ROS_INFO("End listener");
+    std_msgs::Int32 msg;
+    msg.data = -1;
+    pub.publish(msg);
 	ros::shutdown();
 }
 
@@ -34,7 +37,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "portal",ros::init_options::NoSigintHandler);
 	ros::NodeHandle n;
-	ros::Publisher pub = n.advertise<std_msgs::Int32>("portal", 1000);
+	pub = n.advertise<std_msgs::Int32>("portal", 1000);
 	ros::Rate loop_rate(10);
     signal(SIGINT, sig_handle);
     
