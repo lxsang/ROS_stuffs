@@ -40,7 +40,8 @@ void DataConsumer::consume(ros::Publisher** pub,portal_data_t* pd)
     
     else if(pd->hash == OccupancyGridHelper::hash())
         INPUT<nav_msgs::OccupancyGrid,OccupancyGridHelper>(pub,pd);
-
+    else if(pd->hash == MapDataHelper::hash())
+        INPUT<multi_master_bridge::MapData,MapDataHelper>(pub,pd);
     else
         ROS_INFO("Cannot find data handle for hash %d", pd->hash);
     

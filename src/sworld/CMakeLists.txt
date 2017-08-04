@@ -21,7 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../margent/src)
 
 # Link libraries :
 link_directories( ${PROJECT_SOURCE_DIR}/.. )
-link_directories( ${PROJECT_SOURCE_DIR}/../margent/build )
+#link_directories( ${PROJECT_SOURCE_DIR}/../margent/build )
 
 add_library(sworld SHARED src/tools.cpp src/float2.cpp src/int2.cpp src/tools.cpp src/shape.cpp src/impact.cpp src/ogmap.cpp src/visimap.cpp)
 

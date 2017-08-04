@@ -1,5 +1,5 @@
 <launch>
-    <arg name="iface" default="wlp2s0" />
+    <arg name="iface" default="wlo1" />
     <arg name="port" default="9196" />
 
     <node pkg="multi_master_bridge" type="portal" respawn="false" name="portal" output="screen"/> 
@@ -16,9 +16,13 @@
         <param name="listen_interface" value="$(arg iface)"/>
     </node>
 
-     <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen"> 
+     <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
+     <!-- gdb -ex run ~~args -->
         <param name="publish_to" value="/neighbor_map"/>
         <param name="robot_decay_time_s" value="5"/>
         <param name="network_interface" value="$(arg iface)"/>
+        <param name="init_x" value="0.0"/>
+        <param name="init_y" value="0.1"/>
+        <param name="init_z" value="0.0"/>
     </node>
 </launch>

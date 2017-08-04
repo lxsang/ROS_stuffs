@@ -9,4 +9,5 @@
 #include "PoseHelper.h" 
 #include "QuaternionHelper.h"
 #include "PointHelper.h"
+#include "MapDataHelper.h"
 #endif

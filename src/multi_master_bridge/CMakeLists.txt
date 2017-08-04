@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
+  nav_msgs
   message_generation
 )
 
@@ -51,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    NeighbourId.msg
+   MapData.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -62,7 +65,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate actions in the 'action' folder
 # add_action_files(
-#   FILES
+#   FILES 
 #   Action1.action
 #   Action2.action
 # )
@@ -71,6 +74,8 @@ find_package(catkin REQUIRED COMPONENTS
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
+   nav_msgs
  )
 
 ################################################
@@ -138,6 +143,7 @@ add_library(wdog STATIC
   src/helpers/PoseHelper.cpp
   src/helpers/MapMetaDataHelper.cpp
   src/helpers/OccupancyGridHelper.cpp
+  src/helpers/MapDataHelper.cpp
 )
 
 ## Add cmake target dependencies of the library

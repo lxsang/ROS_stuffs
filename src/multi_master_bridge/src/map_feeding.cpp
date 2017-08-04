@@ -16,6 +16,7 @@ extern "C"
 ros::Publisher pub;
 std::map<string,multi_master_bridge::NeighbourId*> neighbors;
 std::string publish_to,_interface;
+double _init_x,_init_y,_init_z;
 static int sockfd=-1;
 int robot_decay_time_s;
 struct inet_id_ id;
@@ -27,17 +28,23 @@ void neighbors_discover(const multi_master_bridge::NeighbourId::ConstPtr& msg)
 }
 void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
-	ROS_INFO("Map available");
+	// send amap
+	MapDataHelper hp;
+	
+	multi_master_bridge::MapData data;
+	nav_msgs::OccupancyGrid* m = new nav_msgs::OccupancyGrid(*msg);
+	data.map = *m;
+	data.position.x = _init_x;
+	data.position.y = _init_y;
+	data.position.z = _init_z;
+
+	hp.consume((void*)&data);
+	struct portal_data_t d = hp.getPortalDataFor(inet_ntoa(id.ip));
+	d.publish_to = (char*)publish_to.c_str();
+	d.hash = MapDataHelper::hash();
+	//send data to all neighbour
 	for(std::map<string,multi_master_bridge::NeighbourId*>::iterator it = neighbors.begin(); it != neighbors.end(); it++)
 	{
-		// send amap
-		OccupancyGridHelper hp;
-		
-		nav_msgs::OccupancyGrid* m = new nav_msgs::OccupancyGrid(*msg);
-		hp.consume((void*)m);
-    	struct portal_data_t d = hp.getPortalDataFor(inet_ntoa(id.ip));
-		d.publish_to = (char*)publish_to.c_str();
-		d.hash = OccupancyGridHelper::hash();
 		ROS_INFO("Feed map to %s:%d",it->second->ip.c_str(),it->second->port);
 		teleport_raw_data(it->second->ip.c_str(),it->second->port,d);
 
@@ -55,6 +62,9 @@ int main(int argc, char **argv)
 	n.param<std::string>("/map_exchange/publish_to",publish_to, "/other_map");
 	n.param<int>("/map_exchange/robot_decay_time_s",robot_decay_time_s, 5);
 	n.param<std::string>("/map_exchange/network_interface",_interface, "wlan0");
+	n.param<double>("/map_exchange/init_z",_init_z, 0.0);
+	n.param<double>("/map_exchange/init_x",_init_x, 0.0);
+	n.param<double>("/map_exchange/init_y",_init_y, 0.0);
 	//pub = n.advertise<nav_msgs::OccupancyGrid>("other_map", 1000);
 	ros::Subscriber sub = n.subscribe<multi_master_bridge::NeighbourId>("/new_robot", 50,&neighbors_discover);
 	ros::Subscriber sub1 = n.subscribe<nav_msgs::OccupancyGrid>("/map", 100,&send_newmap);

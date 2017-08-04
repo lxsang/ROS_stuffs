@@ -13,6 +13,7 @@ class TwinMerge {
         std::string robot_map_topic;
         std::string other_robot_map_topic;
         std::string merged_map_topic;
+        std::string my_init_pose;
         ros::NodeHandle node;
         nav_msgs::OccupancyGridPtr global_map;
         ros::Publisher  global_map_pub;
@@ -29,6 +30,7 @@ TwinMerge::TwinMerge()
     node.param<std::string>("robot_map_topic", robot_map_topic, "/map");
     node.param<std::string>("other_robot_map_topic",other_robot_map_topic, "/map_other");
     node.param<std::string>("merged_map_topic", merged_map_topic, "/map_global");
+    node.param<std::string>("my_init_pose", my_init_pose, "pose");
     global_map = nullptr;
     // publisher register
     global_map_pub = node.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
@@ -105,6 +107,10 @@ void TwinMerge::mergeCallBack(const  nav_msgs::OccupancyGrid::ConstPtr& map)
     merger.estimateTransforms();
     ROS_INFO("Compose new map");
     global_map = merger.composeGrids();
+    global_map->header.frame_id = "map";
+    ros::Time now = ros::Time::now();
+    global_map->info.map_load_time = now;
+    global_map->header.stamp = now;
     ROS_INFO("Publishing global map");
     global_map_pub.publish(global_map);
 }
