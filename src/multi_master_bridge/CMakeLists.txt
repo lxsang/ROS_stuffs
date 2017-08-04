@@ -62,7 +62,7 @@ find_package(catkin REQUIRED COMPONENTS
 #   Service1.srv
 #   Service2.srv
 # )
-
+  
 ## Generate actions in the 'action' folder
 # add_action_files(
 #   FILES 
@@ -145,7 +145,7 @@ add_library(wdog STATIC
   src/helpers/OccupancyGridHelper.cpp
   src/helpers/MapDataHelper.cpp
 )
-
+add_dependencies(wdog multi_master_bridge_generate_messages_cpp)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
