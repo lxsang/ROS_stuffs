@@ -24,13 +24,19 @@ void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs
  * yz14simpar
  */
 void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their_map) {
+  int offset_w, offset_h;
+  offset_h = ((int)global_map->info.height - (int)their_map.info.height);
+  offset_w = ((int)global_map->info.width - (int)their_map.info.width);
+  ROS_INFO("global (%d,%d) their (%d,%d)",global_map->info.width, global_map->info.height, their_map.info.width, their_map.info.height);
+  ROS_INFO("Offset w %d offset h %d", offset_w, offset_h);
   for(int i = 0; i < (int)global_map->info.width; i++) {
     for(int j = 0; j < (int)global_map->info.height; j++) {
-      if(i+delta_x >= 0 && i+delta_x < (int)their_map.info.width &&
-	 j+delta_y >= 0 && j+delta_y < (int)their_map.info.height) {
+      if(i+delta_x - offset_w >= 0 && i+delta_x - offset_w < (int)their_map.info.width &&
+	 j+delta_y - offset_h >= 0 && j+delta_y - offset_h < (int)their_map.info.height) {
 	if((int)global_map->data[i+j*(int)global_map->info.width] == UNKNOWN)
     {
-	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x+(j+delta_y)*(int)their_map.info.width];
+        //ROS_INFO("merging...");
+	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x - offset_w +(j+delta_y - offset_h)*(int)their_map.info.width];
     }
     }
     }
@@ -102,7 +108,7 @@ int main(int argc, char** argv)
 	ros::Subscriber sub1 = n.subscribe<nav_msgs::OccupancyGrid>(my_map_, 50,&merge_local_map);
     global_map = nullptr;
     // publisher register
-    global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
+    global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(my_map_, 50, true);
      other_map_pub = n.advertise<nav_msgs::OccupancyGrid>("/map_other", 50, true);
      ros::spin();
 }
