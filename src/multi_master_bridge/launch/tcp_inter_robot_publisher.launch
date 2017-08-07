@@ -1,9 +1,9 @@
 <launch>
-    <arg name="iface" default="wlo1" />
+    <arg name="iface" default="wlp2s0" />
     <arg name="port" default="9196" />
-    <arg name="init_x" default="-1.41290802042"/>
-    <arg name="init_y" default="-0.297142914121"/>
-    <arg name="init_z" default="0.0102"/>
+    <arg name="init_x" default="0.0"/>
+    <arg name="init_y" default="0.0"/>
+    <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     
     <node pkg="multi_master_bridge" type="portal" respawn="false" name="portal" output="screen"/> 

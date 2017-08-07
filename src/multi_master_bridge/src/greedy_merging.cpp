@@ -55,7 +55,7 @@ void merge_map( geometry_msgs::Pose p,  nav_msgs::OccupancyGrid msg)
         ROS_INFO("merging");
         greedyMerging(round(delta.position.x), round(delta.position.y), msg);
     }
-    global_map->header.frame_id = "map";
+    //global_map->header.frame_id = "map";
     ros::Time now = ros::Time::now();
     global_map->info.map_load_time = now;
     global_map->header.stamp = now;
@@ -66,13 +66,20 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
 
     ROS_INFO("Merging local map");
-    merge_map(my_pose,*msg);
+    //merge_map(my_pose,*msg);
+    if(!global_map)
+    {
+        ROS_INFO("Global map not found, init it as the provide map");
+        global_map.reset(new nav_msgs::OccupancyGrid(*msg));
+    
+    }
 }
 void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
 {
     geometry_msgs::Pose p;
     p.position = msg->position;
     ROS_INFO("Merging map from another robot");
+    ROS_INFO("Their init pose is [%f,%f,%f]\n",p.position.x,p.position.y, p.position.z);
     other_map_pub.publish(msg->map);
     merge_map(p,msg->map);
 }
