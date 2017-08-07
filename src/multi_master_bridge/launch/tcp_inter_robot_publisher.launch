@@ -1,8 +1,8 @@
 <launch>
     <arg name="iface" default="wlo1" />
     <arg name="port" default="9196" />
-    <arg name="init_x" default="-1.41290802042"/>
-    <arg name="init_y" default="-0.297142914121"/>
+    <arg name="init_x" default="0.456282304242"/>
+    <arg name="init_y" default="-1.22848480856"/>
     <arg name="init_z" default="0.0102"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     

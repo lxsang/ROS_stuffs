@@ -107,10 +107,10 @@ int send_beacon(int port, const char* iface, int listen_port)
     }
     close(sockfd);
 
-    MLOG("sent %d bytes to %s\n", numbytes,inet_ntoa(their_addr.sin_addr));
+    //MLOG("sent %d bytes to %s\n", numbytes,inet_ntoa(their_addr.sin_addr));
     if(numbytes != totalbytes)
         return 0;
-    MLOG("Success!");
+    //MLOG("Success!");
     return 1;
 }
 int bind_udp_socket(int port)

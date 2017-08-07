@@ -24,13 +24,16 @@ void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs
  * yz14simpar
  */
 void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their_map) {
+  int offset_w, offset_h;
+  offset_h = (global_map->info.height - their_map.info.height)/2;
+  offset_w = (global_map->info.width - their_map.info.width)/2;
   for(int i = 0; i < (int)global_map->info.width; i++) {
     for(int j = 0; j < (int)global_map->info.height; j++) {
-      if(i+delta_x >= 0 && i+delta_x < (int)their_map.info.width &&
-	 j+delta_y >= 0 && j+delta_y < (int)their_map.info.height) {
+      if(i+delta_x - offset_w >= 0 && i+delta_x - offset_w < (int)their_map.info.width &&
+	 j+delta_y - offset_h >= 0 && j+delta_y - offset_h < (int)their_map.info.height) {
 	if((int)global_map->data[i+j*(int)global_map->info.width] == UNKNOWN)
     {
-	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x+(j+delta_y)*(int)their_map.info.width];
+	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x - offset_w +(j+delta_y - offset_h)*(int)their_map.info.width];
     }
     }
     }
