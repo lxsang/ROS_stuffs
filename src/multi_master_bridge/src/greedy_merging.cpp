@@ -71,7 +71,7 @@ void merge_map( geometry_msgs::Pose p,  nav_msgs::OccupancyGrid msg)
 void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
 
-    ROS_INFO("Merging local map");
+    //ROS_INFO("Merging local map");
     //merge_map(my_pose,*msg);
     if(!global_map)
     {
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 	ros::Subscriber sub1 = n.subscribe<nav_msgs::OccupancyGrid>(my_map_, 50,&merge_local_map);
     global_map = nullptr;
     // publisher register
-    global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(my_map_, 50, true);
+    global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
      other_map_pub = n.advertise<nav_msgs::OccupancyGrid>("/map_other", 50, true);
      ros::spin();
 }
