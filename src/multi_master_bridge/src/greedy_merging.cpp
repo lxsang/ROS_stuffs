@@ -9,6 +9,7 @@ std::string other_map_,my_map_,merged_map_topic;
 nav_msgs::OccupancyGridPtr global_map;
 geometry_msgs::Pose my_pose;
 ros::Publisher  global_map_pub;
+ros::Publisher  other_map_pub;
 
 void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs::Pose &delta, double resolution) {
   
@@ -28,8 +29,10 @@ void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their
       if(i+delta_x >= 0 && i+delta_x < (int)their_map.info.width &&
 	 j+delta_y >= 0 && j+delta_y < (int)their_map.info.height) {
 	if((int)global_map->data[i+j*(int)global_map->info.width] == UNKNOWN)
+    {
 	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x+(j+delta_y)*(int)their_map.info.width];
-      }
+    }
+    }
     }
   }
 }
@@ -57,7 +60,7 @@ void merge_map( geometry_msgs::Pose p,  nav_msgs::OccupancyGrid msg)
     global_map->info.map_load_time = now;
     global_map->header.stamp = now;
     ROS_INFO("Publishing global map");
-    global_map_pub.publish(global_map);
+    global_map_pub.publish(*global_map);
 }
 void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
@@ -70,6 +73,7 @@ void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
     geometry_msgs::Pose p;
     p.position = msg->position;
     ROS_INFO("Merging map from another robot");
+    other_map_pub.publish(msg->map);
     merge_map(p,msg->map);
 }
 int main(int argc, char** argv)
@@ -92,5 +96,6 @@ int main(int argc, char** argv)
     global_map = nullptr;
     // publisher register
     global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
+     other_map_pub = n.advertise<nav_msgs::OccupancyGrid>("/map_other", 50, true);
      ros::spin();
 }
