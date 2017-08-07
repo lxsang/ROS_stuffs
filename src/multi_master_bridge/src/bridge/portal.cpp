@@ -10,7 +10,7 @@ extern "C"
 }
 #endif
 #include <signal.h>
-#include "helpers/DataConsumer.h"
+#include "../helpers/DataConsumer.h"
 static int sockfd=-1;
 ros::Publisher pub;
 

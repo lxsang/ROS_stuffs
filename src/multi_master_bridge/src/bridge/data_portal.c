@@ -105,6 +105,7 @@ int teleport_raw_data(const char*ip, int port,struct portal_data_t pdata)
         // MLOG("sent %d\n",pdata.size);
         // send raw data
         numbytes = send(sockfd,pdata.data,pdata.size,0);
+        //MLOG("numbytes %d %d\n",numbytes,pdata.size);
         if(numbytes != pdata.size) goto fail;
         // MLOG("sent raw \n");
         //numbytes = send(sockfd,buf,total_length,0);

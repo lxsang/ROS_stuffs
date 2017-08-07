@@ -2,7 +2,7 @@
 #define DATA_CONSUMER_H
 
 #include "helper.h"
-#include "../data_portal.h"
+#include "../bridge/data_portal.h"
 
 #include "std_msgs/Header.h"
 #include "std_msgs/String.h"

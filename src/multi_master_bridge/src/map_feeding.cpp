@@ -4,7 +4,7 @@
 extern "C"
 {
 #endif
-#include "data_portal.h"
+#include "bridge/data_portal.h"
 
 #ifdef __cplusplus
 }
@@ -57,7 +57,7 @@ void send_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "feed");
+    ros::init(argc, argv, "map_exchange");
 	ros::NodeHandle n;
 	n.param<std::string>("/map_exchange/publish_to",publish_to, "/other_map");
 	n.param<int>("/map_exchange/robot_decay_time_s",robot_decay_time_s, 5);

@@ -614,6 +614,7 @@
         "sequenced_index.hpp": "c",
         "unistr.h": "c",
         "map_feeding.cpp": "c",
-        "robot_discover.cpp": "c"
+        "robot_discover.cpp": "c",
+        "dataconsumer.h": "c"
     }
 }

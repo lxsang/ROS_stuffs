@@ -7,7 +7,7 @@
 extern "C"
 {
 #endif
-#include "../data_portal.h"
+#include "../bridge/data_portal.h"
 
 #ifdef __cplusplus
 }

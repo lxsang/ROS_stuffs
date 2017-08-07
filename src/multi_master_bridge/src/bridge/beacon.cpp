@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 			ss << "Sent out beacon "<< port;
 			ss << " on "<< broadcast_to;
 			str.data = ss.str();
-			ROS_INFO("%s", str.data.c_str());
+			//ROS_INFO("%s", str.data.c_str());
 			pub.publish(str);
 		}
 		loop_rate.sleep();

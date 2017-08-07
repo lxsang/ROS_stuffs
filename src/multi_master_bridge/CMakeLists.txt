@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(multi_master_bridge)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++0x)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -131,8 +131,8 @@ include_directories(
 # )
 
 add_library(wdog STATIC
-  src/watchdog.c
-  src/data_portal.c
+  src/bridge/watchdog.c
+  src/bridge/data_portal.c
   src/helpers/StringHelper.cpp
   src/helpers/Int32Helper.cpp
   src/helpers/HeaderHelper.cpp
@@ -157,13 +157,13 @@ add_library(wdog STATIC
 # add_executable(${PROJECT_NAME}_node src/multi_master_bridge_node.cpp)
 
 add_executable(beacon
-  src/beacon.cpp
+  src/bridge/beacon.cpp
 )
 add_executable(robot_discover
-  src/robot_discover.cpp
+  src/bridge/robot_discover.cpp
 )
 add_executable(portal
-  src/portal.cpp
+  src/bridge/portal.cpp
 )
 add_executable(map_feeding
   src/map_feeding.cpp
@@ -174,12 +174,16 @@ add_executable(udp_broadcast
 add_executable(udp_dog
   src/udp_dog.cpp
 )
+add_executable(map_merging
+  src/greedy_merging.cpp
+)
 target_link_libraries(beacon wdog ${catkin_LIBRARIES})
 target_link_libraries(robot_discover wdog ${catkin_LIBRARIES})
 target_link_libraries(portal wdog ${catkin_LIBRARIES})
 target_link_libraries(map_feeding wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_broadcast wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_dog wdog ${catkin_LIBRARIES})
+target_link_libraries(map_merging wdog ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

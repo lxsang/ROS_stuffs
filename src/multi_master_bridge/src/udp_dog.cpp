@@ -4,7 +4,7 @@
 extern "C"
 {
 #endif
-#include "watchdog.h"
+#include "bridge/watchdog.h"
 
 #ifdef __cplusplus
 }
