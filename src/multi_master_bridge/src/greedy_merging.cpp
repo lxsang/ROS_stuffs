@@ -23,6 +23,7 @@ void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs
  * Algorithm 1 - Greedy Merging
  * yz14simpar
  */
+ /*
 void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their_map) {
   int offset_w, offset_h;
   offset_h = ((int)global_map->info.height - (int)their_map.info.height);
@@ -37,6 +38,20 @@ void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their
     {
         //ROS_INFO("merging...");
 	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x - offset_w +(j+delta_y - offset_h)*(int)their_map.info.width];
+    }
+    }
+    }
+  }
+}*/
+void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their_map) {
+  for(int i = 0; i < (int)global_map->info.width; i++) {
+    for(int j = 0; j < (int)global_map->info.height; j++) {
+      if(i+delta_x  >= 0 && i+delta_x  < (int)their_map.info.width &&
+	 j+delta_y  >= 0 && j+delta_y  < (int)their_map.info.height) {
+	if((int)global_map->data[i+j*(int)global_map->info.width] == UNKNOWN)
+    {
+        //ROS_INFO("merging...");
+	  global_map->data[i+j*(int)global_map->info.width] = their_map.data[i+delta_x  +(j+delta_y )*(int)their_map.info.width];
     }
     }
     }
