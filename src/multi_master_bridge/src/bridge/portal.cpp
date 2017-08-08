@@ -16,10 +16,15 @@ ros::Publisher pub;
 
 void callback(struct portal_data_t d)
 {
-	ros::Publisher* dpub = NULL;
-	DataConsumer consumer;
-	consumer.consume(&dpub,&d);
-	ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
+    try{
+	    ros::Publisher* dpub = NULL;
+	    DataConsumer consumer;
+	    consumer.consume(&dpub,&d);
+	    ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
+    } catch(const char* msg)
+    {
+        ROS_INFO("PROBLEM: %s", msg);
+    }
 }
 void sig_handle(int s)
 {
