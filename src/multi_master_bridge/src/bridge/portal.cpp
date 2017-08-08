@@ -21,6 +21,7 @@ void callback(struct portal_data_t d)
 	    DataConsumer consumer;
 	    consumer.consume(&dpub,&d);
 	    ROS_INFO("[%s] Publish  %d bytes data to:%s\n",d.from,d.size,d.publish_to);
+        if(d.data) free(d.data);
     } catch(const char* msg)
     {
         ROS_INFO("PROBLEM: %s", msg);
