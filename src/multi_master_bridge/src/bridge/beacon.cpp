@@ -24,10 +24,10 @@ void callback(const std_msgs::Int32::ConstPtr& msg)
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "beacon");
-	ros::NodeHandle n;
-	n.param<int>("/beacon/broadcast_to", broadcast_to, 9196);
-    n.param<std::string>("/beacon/broadcast_interface",broadcast_interface, "wlan0");
-	n.param<int>("/beacon/refresh_rate",broadcast_rate, 10);
+	ros::NodeHandle n("~");
+	n.param<int>("broadcast_to", broadcast_to, 9196);
+    n.param<std::string>("broadcast_interface",broadcast_interface, "wlan0");
+	n.param<int>("refresh_rate",broadcast_rate, 10);
 	pub = n.advertise<std_msgs::String>("beacon", 1000);
 	ros::Subscriber sub = n.subscribe<std_msgs::Int32>("/portal", 50,
                                                    &callback);

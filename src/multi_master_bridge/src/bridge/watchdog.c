@@ -347,8 +347,8 @@ struct portal_data_t udp_portal_checkin(int sockfd, struct inet_id_ id)
             from = ((struct sockaddr_in*)sa)->sin_addr;
             if(from.s_addr == id.ip.s_addr)
             {
-                MLOG("Data sending by me, ignore it \n");
-                //return pdata;
+                //MLOG("Data sending by me, ignore it \n");
+                return pdata;
             }
         }
         sa = (struct sockaddr *)&their_addr;
@@ -406,8 +406,8 @@ struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id)
     sa = (struct sockaddr *)&their_addr;
     if(((struct sockaddr_in*)sa)->sin_addr.s_addr == id.ip.s_addr)
     {
-        //MLOG("Beacon sending by me, ignore it \n");
-        return beacon;
+        MLOG("Beacon sending by me, ignore it \n");
+        //return beacon;
     }
     int* v = (int*)buf;
     // read host name

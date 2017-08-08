@@ -14,10 +14,12 @@ void MapDataHelper::rawToRosMsg(uint8_t* data)
     PointHelper ph;
     OccupancyGridHelper op;
     ph.consume(data,-1);
-    op.consume(data+ph.rawsize(),-1);
+    memcpy(&ptr->x,data + ph.rawsize(), sizeof(int));
+    memcpy(&ptr->y, data + ph.rawsize() + sizeof(int), sizeof(int));
+    op.consume(data+ ph.rawsize() + 2*sizeof(int),-1);
     ptr->position = *((geometry_msgs::Point*)ph.msg());
     ptr->map = *((nav_msgs::OccupancyGrid*)op.msg());
-    _rawsize = ph.rawsize() + op.rawsize();
+    _rawsize = ph.rawsize() + op.rawsize() + 2*sizeof(int);
     _msg = (void*) ptr; 
 }
 int MapDataHelper::rosMsgToRaw(uint8_t** data)
@@ -33,10 +35,12 @@ int MapDataHelper::rosMsgToRaw(uint8_t** data)
     int plen = ph.raw(&praw);
     int olen = oh.raw(&oraw);
    // ROS_INFO("Length %d %d\n",plen,olen);
-    *data = (uint8_t*) malloc(plen+olen);
+    *data = (uint8_t*) malloc(plen+olen + 2*sizeof(int));
     memcpy(*data,praw,plen);
-    memcpy(*data+plen,oraw,olen);
+    memcpy(*data + plen, &ptr->x,sizeof(int));
+    memcpy(*data + plen + sizeof(int), &ptr->y, sizeof(int));
+    memcpy(*data + plen + 2*sizeof(int),oraw,olen);
     //conversion code here
-    return plen+olen;
+    return plen + olen + 2*sizeof(int);
 }
 

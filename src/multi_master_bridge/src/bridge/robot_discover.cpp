@@ -26,12 +26,12 @@ std::string listen_interface;
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "watch_dog",ros::init_options::NoSigintHandler);
-	ros::NodeHandle n;
-	n.param<int>("/robot_discover/listen_to", listen_to, 9191);
-    n.param<std::string>("/robot_discover/listen_interface",listen_interface, "wlan0");
+	ros::NodeHandle n("~");
+	n.param<int>("listen_to", listen_to, 9191);
+    n.param<std::string>("listen_interface",listen_interface, "wlan0");
 	signal(SIGINT, sig_handle);
 	
-	ros::Publisher dog_pub = n.advertise<multi_master_bridge::NeighbourId>("new_robot", 1000);
+	ros::Publisher dog_pub = n.advertise<multi_master_bridge::NeighbourId>("/new_robot", 1000);
 	ros::Rate loop_rate(10);
 
 	sockfd = bind_udp_socket(listen_to);
