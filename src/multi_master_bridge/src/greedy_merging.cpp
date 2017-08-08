@@ -103,37 +103,49 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     // find the bounding box for the updated zone
     for(i = 0; i <global_map->info.width;i++)
         for(j = 0; j < global_map->info.height;j++)
-            if(global_map->data[i+j* global_map->info.width] != msg->data[i+j*msg->info.width])
+        {
+            int8_t cell = msg->data[i+j*msg->info.width];
+            if(global_map->data[i+j* global_map->info.width] != cell && cell != UNKNOWN )
             {
                 x = i;
                 goto findy;
             }
+        }
     findy:
     if(x == -1) goto end;
     for(i = 0; i <global_map->info.height;i++)
         for(j = 0; j < global_map->info.width;j++)
-            if(global_map->data[j+i* global_map->info.width] != msg->data[j+i*msg->info.width])
+        {
+            int8_t cell = msg->data[j+i*msg->info.width];
+            if(global_map->data[j+i* global_map->info.width] != cell && cell != UNKNOWN)
             {
                 y = i;
                 goto findw;
             }
+        }
     
     findw:
     for(i = global_map->info.width -1; i>=0;i--)
         for(j = 0; j < global_map->info.height;j++)
-            if(global_map->data[i+j* global_map->info.width] != msg->data[i+j*msg->info.width])
+        {
+            int8_t cell = msg->data[i+j*msg->info.width];
+            if(global_map->data[i+j* global_map->info.width] != cell && cell != UNKNOWN)
             {
                 x1 = i;
                 goto findh;
             }
+        }
     findh:
      for(i = global_map->info.height - 1; i >= 0;i--)
         for(j = 0; j < global_map->info.width;j++)
-            if(global_map->data[j+i* global_map->info.width] != msg->data[j+i*msg->info.width])
+        {
+            int8_t cell = msg->data[j+i*msg->info.width];
+            if(global_map->data[j+i* global_map->info.width] != cell && cell != UNKNOWN)
             {
                 y1 = i;
                 goto end;
             }
+        }
     end:
     if(x == -1 || y == -1 || x1 == -1 || y1 == -1)
     {
@@ -197,7 +209,7 @@ int main(int argc, char** argv)
     global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
     other_map_pub = n.advertise<nav_msgs::OccupancyGrid>(map_other_, 50, true);
     map_update_pub = n.advertise<multi_master_bridge::MapData>(map_update_, 50, true);
-    ros::Rate r(0.5);
+    ros::Rate r(5);
     while(ros::ok())
     {
         ros::spinOnce();

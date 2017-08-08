@@ -16,7 +16,7 @@ extern "C"
 ros::Publisher pub;
 std::map<string,multi_master_bridge::NeighbourId*> neighbors;
 std::string publish_to,_interface,map_update_;
-double _init_x,_init_y,_init_z;
+double _init_x,_init_y,_init_z,_sending_rate;
 static int sockfd=-1;
 int robot_decay_time_s;
 struct inet_id_ id;
@@ -66,10 +66,11 @@ int main(int argc, char **argv)
 	n.param<double>("init_z",_init_z, 0.0);
 	n.param<double>("init_x",_init_x, 0.0);
 	n.param<double>("init_y",_init_y, 0.0);
+	n.param<double>("sending_rate",_sending_rate, 1.0);
 	//pub = n.advertise<nav_msgs::OccupancyGrid>("other_map", 1000);
 	ros::Subscriber sub = n.subscribe<multi_master_bridge::NeighbourId>("/new_robot", 50,&neighbors_discover);
 	ros::Subscriber sub1 = n.subscribe<multi_master_bridge::MapData>(map_update_, 100,&send_newmap);
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(_sending_rate);
 	id = read_inet_id(_interface.c_str());
 	ROS_INFO("My address %s on %s",inet_ntoa(id.ip), _interface.c_str());
 	while(ros::ok())

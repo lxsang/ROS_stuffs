@@ -42,6 +42,7 @@
         <param name="init_y" value="$(arg init_y)"/>
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="sending_rate" value="0.3" />
     </node>
 
 </launch>
