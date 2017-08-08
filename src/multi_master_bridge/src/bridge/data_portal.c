@@ -267,6 +267,11 @@ void portal_checkin(void* rawdata)
     
     // read all remain raw data
     data.data = (uint8_t*)malloc(data.size);
+    if(!data.data)
+    {
+        MLOG("MALLOC: Cannot allocate data\n");
+        goto fail;
+    }
     int chunk = 0;
     numbytes = 0;
     while((chunk = recv(call->client,data.data+numbytes,data.size - numbytes,0))>0 && numbytes != data.size)
