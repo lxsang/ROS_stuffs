@@ -86,14 +86,14 @@ void merge_map( geometry_msgs::Pose p,  nav_msgs::OccupancyGrid msg)
 void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
 
-    //ROS_INFO("Merging local map");
-    //merge_map(my_pose,*msg);
-    if(!global_map)
+    ROS_INFO("Merging local map");
+    merge_map(my_pose,*msg);
+    /*if(!global_map)
     {
         ROS_INFO("Global map not found, init it as the provide map");
         global_map.reset(new nav_msgs::OccupancyGrid(*msg));
     
-    }
+    }*/
 }
 void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
 {
@@ -125,5 +125,11 @@ int main(int argc, char** argv)
     // publisher register
     global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
      other_map_pub = n.advertise<nav_msgs::OccupancyGrid>("/map_other", 50, true);
-     ros::spin();
+
+    ros::Rate r(0.5);
+    while(ros::ok())
+    {
+        ros::spinOnce();
+        r.sleep();
+    }
 }
