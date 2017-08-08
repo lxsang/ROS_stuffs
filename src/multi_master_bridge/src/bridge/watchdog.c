@@ -406,8 +406,8 @@ struct beacon_t sniff_beacon(int sockfd,struct inet_id_ id)
     sa = (struct sockaddr *)&their_addr;
     if(((struct sockaddr_in*)sa)->sin_addr.s_addr == id.ip.s_addr)
     {
-        MLOG("Beacon sending by me, ignore it \n");
-        //return beacon;
+        //MLOG("Beacon sending by me, ignore it \n");
+        return beacon;
     }
     int* v = (int*)buf;
     // read host name
