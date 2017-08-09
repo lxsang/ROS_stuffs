@@ -91,12 +91,17 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     // first find map update
     if(!global_map)
     {
-        ROS_INFO("Global map not found, init it as local map");
-        global_map.reset(new nav_msgs::OccupancyGrid(*msg));
+        ROS_INFO("Global map not found, create it");
+        /*global_map.reset(new nav_msgs::OccupancyGrid(*msg));
         // publish map update as the entire map
-        global_map_pub.publish(*global_map);
+        global_map_pub.publish(*global_map);*/
 
-        return;
+        global_map.reset(new nav_msgs::OccupancyGrid());
+        global_map->header = msg->header;
+        global_map->info = msg->info;
+        global_map->data.resize(msg->info.width*msg->info.height,UNKNOWN);
+
+       // return;
     }
     // NOTE: The two maps has a same dimension
     int x = -1, y = -1,x1 = -1, y1 = -1, i,j;
