@@ -6,7 +6,7 @@
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     <arg name="map_update" default="/map_update"/>
-    <!--x -0.729515249631 y -1.00251715735>
+    <!--x -0.729515249631 y -1.00251715735!-->
      <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
     
     <node pkg="multi_master_bridge" type="portal" respawn="false" name="portal" output="screen" launch-prefix="" /> 
