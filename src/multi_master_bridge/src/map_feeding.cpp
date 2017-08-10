@@ -40,17 +40,14 @@ void send_newmap(const multi_master_bridge::MapData::ConstPtr& msg)
 	struct portal_data_t d = hp.getPortalDataFor(inet_ntoa(id.ip));
 	d.publish_to = (char*)publish_to.c_str();
 	d.hash = MapDataHelper::hash();
-	//send data to all neighbour
+	//send data to all active neighbour
 	for(int i = 0; i < neighbors.size;i++ )
 	{
-		if(neighbors.list[i].status != -1)
+		if(neighbors.list[i].status != -1 && neighbors.list[i].status != 1)
 		{
 			ROS_INFO("Feed map to %s (%s):%d", neighbors.list[i].ip.c_str(),  neighbors.list[i].name.c_str() , neighbors.list[i].port);
 			teleport_raw_data( neighbors.list[i].ip.c_str(), neighbors.list[i].port,d);
 		}
-		// free allocated memory
-		//ROS_INFO("Feed x:%f, st.sec:%d, st.nsec:%d, fid:%s", m.seq, m.stamp.sec,m.stamp.nsec,m.frame_id.c_str());
-		//pub.publish(m);
 	}
 	if(d.data) free(d.data);
 	if(data) delete data;
@@ -63,7 +60,6 @@ int main(int argc, char **argv)
 	n.param<std::string>("publish_to",publish_to, "/other_map");
 	n.param<std::string>("network_interface",_interface, "wlan0");
 	n.param<std::string>("map_update_topic",map_update_, "/map_update");
-	n.param<std::string>("my_local_map",map_local_, "/map");
 	n.param<double>("init_z",_init_z, 0.0);
 	n.param<double>("init_x",_init_x, 0.0);
 	n.param<double>("init_y",_init_y, 0.0);

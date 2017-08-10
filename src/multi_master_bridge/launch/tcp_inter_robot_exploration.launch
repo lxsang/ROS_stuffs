@@ -6,6 +6,7 @@
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     <arg name="map_update" default="/map_update"/>
+    <arg name"global_map_topic" default="/map" />
     <!--x -0.729515249631 y -1.00251715735!-->
      <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
     
@@ -28,7 +29,7 @@
      <!-- gdb -ex run ~~args -->
         <param name="other_map" value="$(arg neighbor_map)"/>
         <param name="my_map" value="/local_map"/>
-        <param name="merged_map_topic" value="/map"/>
+        <param name="merged_map_topic" value="$(arg global_map_topic)"/>
         <param name="init_x" value="$(arg init_x)"/>
         <param name="init_y" value="$(arg init_y)"/>
         <param name="init_z" value="$(arg init_z)"/>
@@ -47,9 +48,19 @@
         <param name="sending_rate" value="0.5" />
     </node>
 
+    <node pkg="multi_master_bridge" type="/init_map_for_newcommer" respawn="false" name="/init_map_for_newcommer" output="screen" launch-prefix="">
+     <!-- gdb -ex run ~~args -->
+        <param name="publish_to" value="$(arg neighbor_map)"/>
+        <param name="network_interface" value="$(arg iface)"/>
+        <param name="init_x" value="$(arg init_x)"/>
+        <param name="init_y" value="$(arg init_y)"/>
+        <param name="init_z" value="$(arg init_z)"/>
+        <param name="global_map_topic" value="$(arg global_map_topic)"/>
+    </node>
+
     <!--Exploration-->
 
-    <include file="$(find turtlebot_car)/launch/bringup_minimal.launch" />
+  <include file="$(find turtlebot_car)/launch/bringup_minimal.launch" />
   <include file="$(find turtlebot_car)/launch/gmapping.launch" />
   <include file="$(find turtlebot_car)/launch/move_base.launch" />
 
