@@ -20,6 +20,7 @@
   
     <node pkg="multi_master_bridge" type="robot_discover" respawn="false" name="robot_discover" output="screen"> 
         <param name="listen_to" value="$(arg port)"/>
+         <param name="robot_decay_time_s" value="5"/>
         <param name="listen_interface" value="$(arg iface)"/>
     </node>
 
@@ -38,13 +39,12 @@
      <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
      <!-- gdb -ex run ~~args -->
         <param name="publish_to" value="$(arg neighbor_map)"/>
-        <param name="robot_decay_time_s" value="5"/>
         <param name="network_interface" value="$(arg iface)"/>
         <param name="init_x" value="$(arg init_x)"/>
         <param name="init_y" value="$(arg init_y)"/>
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
-        <param name="sending_rate" value="1.0" />
+        <param name="sending_rate" value="0.5" />
     </node>
 
     <!--Exploration-->
@@ -98,6 +98,6 @@
     <param name="frontier_topic" value="phrontier_global"/>
   </node>
 
-    <node pkg="simple_exploration" type="simple_exploration" name="simple_exploration" >
-    </node>
+    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration" >
+    </node-->
 </launch>

@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    NeighbourId.msg
    MapData.msg
+   NeighbourList.msg
  )
 
 ## Generate services in the 'srv' folder
