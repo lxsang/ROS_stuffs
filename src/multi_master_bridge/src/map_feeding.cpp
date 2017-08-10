@@ -48,10 +48,10 @@ void send_newmap(const multi_master_bridge::MapData::ConstPtr& msg)
 		teleport_raw_data(it->second->ip.c_str(),it->second->port,d);
 
 		// free allocated memory
-		if(d.data) free(d.data);
 		//ROS_INFO("Feed x:%f, st.sec:%d, st.nsec:%d, fid:%s", m.seq, m.stamp.sec,m.stamp.nsec,m.frame_id.c_str());
 		//pub.publish(m);
 	}
+	if(d.data) free(d.data);
 	if(data) delete data;
 }
 
