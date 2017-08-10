@@ -4,16 +4,16 @@
 <!-- roslaunch turtlebot_rviz_launchers view_navigation.launch-->
   <!-- turtlebot -->
   <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
-  <include file="$(find turtlebot_navigation)/launch/includes/gmapping/gmapping.launch.xml" />
+  <!--include file="$(find turtlebot_navigation)/launch/includes/gmapping/gmapping.launch.xml" /-->
   
-  <!--arg name="scan_topic" default="scan" />
+  <arg name="scan_topic" default="scan" />
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
 
     <param name="base_frame" value="base_footprint"/>
 
     <param name="odom_frame" value="odom"/>
     <param name="map_update_interval" value="1.0"/>
-    <param name="maxUrange" value="3.9"/>
+    <param name="maxUrange" value="2.5"/>
     <param name="maxRange" value="5.0"/>
     <param name="sigma" value="0.01"/>
     <param name="kernelSize" value="1"/>
@@ -33,10 +33,10 @@
     <param name="resampleThreshold" value="0.5"/>
     <param name="particles" value="10"/>
   
-    <param name="xmin" value="-75.0"/>
-    <param name="ymin" value="-75.0"/>
-    <param name="xmax" value="75.0"/>
-    <param name="ymax" value="75.0"/>
+    <param name="xmin" value="-25.0"/>
+    <param name="ymin" value="-25.0"/>
+    <param name="xmax" value="25.0"/>
+    <param name="ymax" value="25.0"/>
 
     <param name="delta" value="0.02"/>
     <param name="llsamplerange" value="0.01"/>
@@ -44,7 +44,7 @@
     <param name="lasamplerange" value="0.005"/>
     <param name="lasamplestep" value="0.005"/>
     <remap from="scan" to="$(arg scan_topic)"/>
-  </node-->
+  </node>
   
   <node pkg="robot_pose_publisher" type="robot_pose_publisher" name="robot_pose_publisher"/>
 

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find turtlebot_car)/launch/bringup_minimal.launch" />
+  <include file="$(find turtlebot_car)/launch/gmapping.launch" />
+  <include file="$(find turtlebot_car)/launch/move_base.launch" />
+</launch>

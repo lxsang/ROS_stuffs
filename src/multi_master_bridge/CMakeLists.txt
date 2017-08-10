@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(multi_master_bridge)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++0x)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
+  nav_msgs
   message_generation
 )
 
@@ -51,6 +53,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    NeighbourId.msg
+   MapData.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -59,10 +62,10 @@ find_package(catkin REQUIRED COMPONENTS
 #   Service1.srv
 #   Service2.srv
 # )
-
+  
 ## Generate actions in the 'action' folder
 # add_action_files(
-#   FILES
+#   FILES 
 #   Action1.action
 #   Action2.action
 # )
@@ -71,6 +74,8 @@ find_package(catkin REQUIRED COMPONENTS
  generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
+   nav_msgs
  )
 
 ################################################
@@ -126,8 +131,8 @@ include_directories(
 # )
 
 add_library(wdog STATIC
-  src/watchdog.c
-  src/data_portal.c
+  src/bridge/watchdog.c
+  src/bridge/data_portal.c
   src/helpers/StringHelper.cpp
   src/helpers/Int32Helper.cpp
   src/helpers/HeaderHelper.cpp
@@ -138,8 +143,9 @@ add_library(wdog STATIC
   src/helpers/PoseHelper.cpp
   src/helpers/MapMetaDataHelper.cpp
   src/helpers/OccupancyGridHelper.cpp
+  src/helpers/MapDataHelper.cpp
 )
-
+add_dependencies(wdog multi_master_bridge_generate_messages_cpp)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -151,13 +157,13 @@ add_library(wdog STATIC
 # add_executable(${PROJECT_NAME}_node src/multi_master_bridge_node.cpp)
 
 add_executable(beacon
-  src/beacon.cpp
+  src/bridge/beacon.cpp
 )
 add_executable(robot_discover
-  src/robot_discover.cpp
+  src/bridge/robot_discover.cpp
 )
 add_executable(portal
-  src/portal.cpp
+  src/bridge/portal.cpp
 )
 add_executable(map_feeding
   src/map_feeding.cpp
@@ -168,12 +174,16 @@ add_executable(udp_broadcast
 add_executable(udp_dog
   src/udp_dog.cpp
 )
+add_executable(map_merging
+  src/greedy_merging.cpp
+)
 target_link_libraries(beacon wdog ${catkin_LIBRARIES})
 target_link_libraries(robot_discover wdog ${catkin_LIBRARIES})
 target_link_libraries(portal wdog ${catkin_LIBRARIES})
 target_link_libraries(map_feeding wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_broadcast wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_dog wdog ${catkin_LIBRARIES})
+target_link_libraries(map_merging wdog ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

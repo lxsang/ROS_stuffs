@@ -38,12 +38,12 @@ INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
 
 # project configuration :
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../../mia/sworld/src)
-include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../../mia/margent/src)
+include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../sworld/src)
+include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../margent/src)
 
 # Link libraries :
-link_libraries( ${Boost_LIBRARIES} )
-link_directories( ${PROJECT_SOURCE_DIR}/../../mia )
+#link_libraries( ${Boost_LIBRARIES} )
+#link_directories( ${PROJECT_SOURCE_DIR}/../../mia )
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
