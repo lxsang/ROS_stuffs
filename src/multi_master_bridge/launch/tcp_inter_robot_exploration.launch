@@ -48,7 +48,7 @@
         <param name="sending_rate" value="0.5" />
     </node>
 
-    <node pkg="multi_master_bridge" type="/init_map_for_newcommer" respawn="false" name="/init_map_for_newcommer" output="screen" launch-prefix="">
+    <node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
      <!-- gdb -ex run ~~args -->
         <param name="publish_to" value="$(arg neighbor_map)"/>
         <param name="network_interface" value="$(arg iface)"/>
