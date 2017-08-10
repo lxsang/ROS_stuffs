@@ -122,7 +122,7 @@ void neighbors_init(const multi_master_bridge::NeighbourList::ConstPtr& msg)
             teleport_raw_data( neighbors.list[i].ip.c_str(), neighbors.list[i].port,d);
 		}
 	}
-	if(d.data) free(d.data);
+	//if(d.data) free(d.data);
 	if(data) delete data;
 }
 void got_newmap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
