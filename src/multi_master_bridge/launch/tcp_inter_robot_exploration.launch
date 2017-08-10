@@ -6,7 +6,7 @@
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     <arg name="map_update" default="/map_update"/>
-    <arg name"global_map_topic" default="/map" />
+    <arg name = "global_map_topic" default="/map" />
     <!--x -0.729515249631 y -1.00251715735!-->
      <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
     
@@ -109,6 +109,6 @@
     <param name="frontier_topic" value="phrontier_global"/>
   </node>
 
-    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration" >
-    </node-->
+    <node pkg="simple_exploration" type="simple_exploration" name="simple_exploration" >
+    </node>
 </launch>
