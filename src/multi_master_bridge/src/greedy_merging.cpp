@@ -49,10 +49,12 @@ void greedyMerging(int delta_x, int delta_y, int x, int y, const nav_msgs::Occup
     for(int j = 0; j < (int)their_map.info.height; j++) {
       if(i+delta_x + x  >= 0 && i+delta_x + x  < (int)global_map->info.width &&
 	 j+delta_y + y  >= 0 && j+delta_y + y  < (int)global_map->info.height) {
-	if((int)global_map->data[i + delta_x + x +(j + delta_y + y)*(int)global_map->info.width] == UNKNOWN)
+    int mycell = i + delta_x + x +(j + delta_y + y)*(int)global_map->info.width;
+    int theircell = i + j*(int)their_map.info.width;
+	if((int)global_map->data[mycell] == UNKNOWN || ( (int)their_map.data[theircell] != UNKNOWN && (int)global_map->data[mycell] != (int)their_map.data[theircell] ))
     {
         //ROS_INFO("merging...");
-	  global_map->data[i + delta_x + x +(j + delta_y + y)*(int)global_map->info.width] = their_map.data[i + j*(int)their_map.info.width];
+	  global_map->data[mycell] = their_map.data[theircell];
     }
     }
     }
