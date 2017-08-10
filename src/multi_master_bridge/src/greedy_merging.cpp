@@ -44,14 +44,14 @@ void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their
     }
   }
 }*/
-void greedyMerging(int delta_x, int delta_y, int x, int y, const nav_msgs::OccupancyGrid their_map) {
+void greedyMerging(int delta_x, int delta_y, int x, int y, const nav_msgs::OccupancyGrid their_map, bool local) {
   for(int i = 0; i < (int)their_map.info.width; i++) {
     for(int j = 0; j < (int)their_map.info.height; j++) {
       if(i+delta_x + x  >= 0 && i+delta_x + x  < (int)global_map->info.width &&
 	 j+delta_y + y  >= 0 && j+delta_y + y  < (int)global_map->info.height) {
     int mycell = i + delta_x + x +(j + delta_y + y)*(int)global_map->info.width;
     int theircell = i + j*(int)their_map.info.width;
-	if((int)global_map->data[mycell] == UNKNOWN || ( (int)their_map.data[theircell] != UNKNOWN && (int)global_map->data[mycell] != (int)their_map.data[theircell] ))
+	if((int)global_map->data[mycell] == UNKNOWN || ( local && (int)their_map.data[theircell] != UNKNOWN && (int)global_map->data[mycell] != (int)their_map.data[theircell] ))
     {
         //ROS_INFO("merging...");
 	  global_map->data[mycell] = their_map.data[theircell];
@@ -61,7 +61,7 @@ void greedyMerging(int delta_x, int delta_y, int x, int y, const nav_msgs::Occup
   }
 }
 
-void merge_map( geometry_msgs::Pose p, int x, int y,  nav_msgs::OccupancyGrid msg)
+void merge_map( geometry_msgs::Pose p, int x, int y,  nav_msgs::OccupancyGrid msg, bool local)
 {
     if(!global_map)
     {
@@ -77,7 +77,7 @@ void merge_map( geometry_msgs::Pose p, int x, int y,  nav_msgs::OccupancyGrid ms
         ROS_INFO("Get relative position");
         getRelativePose(p,my_pose, delta,global_map->info.resolution);
         ROS_INFO("merging");
-        greedyMerging(round(delta.position.x), round(delta.position.y),x,y, msg);
+        greedyMerging(round(delta.position.x), round(delta.position.y),x,y, msg,local);
          //global_map->header.frame_id = "map";
         ros::Time now = ros::Time::now();
         global_map->info.map_load_time = now;
@@ -179,7 +179,7 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     // publish the update
     map_update_pub.publish(update);
     // merge go here
-    merge_map(my_pose,update.x, update.y, update.map);
+    merge_map(my_pose,update.x, update.y, update.map, true);
     ROS_INFO("Merged");
 }
 void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
@@ -190,7 +190,7 @@ void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
     ROS_INFO("Their init pose is [%f,%f,%f]\n",p.position.x,p.position.y, p.position.z);
     ROS_INFO("update zone (%d,%d) (%d,%d)",msg->x, msg->y,msg->map.info.width,msg->map.info.height);
     other_map_pub.publish(msg->map);
-    merge_map(p,msg->x, msg->y,msg->map);
+    merge_map(p,msg->x, msg->y,msg->map, false);
 }
 int main(int argc, char** argv)
 {
