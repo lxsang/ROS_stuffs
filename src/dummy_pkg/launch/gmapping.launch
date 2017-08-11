@@ -48,7 +48,7 @@
   
   <node pkg="robot_pose_publisher" type="robot_pose_publisher" name="robot_pose_publisher"/>
 
-  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml" />
+  <!--include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml" /-->
 
   <!-- laser -->
   <node  pkg="urg_node" type="urg_node" name="urg_node" >
