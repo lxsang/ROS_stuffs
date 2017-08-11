@@ -1,7 +1,7 @@
 <launch>
-    <arg name="iface" default="wlp2s0" />
+    <arg name="iface" default="wlo1" />
     <arg name="port" default="9196" />
-    <arg name="init_x" default="-0.713577685567"/>
+    <arg name="init_x" default="0.839603688789"/>
     <arg name="init_y" default="-1.01993150029"/>
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
@@ -57,13 +57,12 @@
     </node>
 
     <node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
-     <!-- gdb -ex run ~~args -->
         <param name="publish_to" value="$(arg neighbor_map)"/>
         <param name="network_interface" value="$(arg iface)"/>
         <param name="init_x" value="$(arg init_x)"/>
         <param name="init_y" value="$(arg init_y)"/>
         <param name="init_z" value="$(arg init_z)"/>
-        <param name="global_map_topic" value="$(arg global_map_topic)"/>
+        <param name="map_topic" value="/local_map"/>
     </node>
 
     <!--Exploration-->

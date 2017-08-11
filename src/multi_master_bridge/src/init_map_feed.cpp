@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle n("~");
 	n.param<std::string>("publish_to",publish_to, "/other_map");
 	n.param<std::string>("network_interface",_interface, "wlan0");
-	n.param<std::string>("global_map_topic",map_update_, "/global_map");
+	n.param<std::string>("map_topic",map_update_, "/global_map");
 	n.param<double>("init_z",_init_z, 0.0);
 	n.param<double>("init_x",_init_x, 0.0);
 	n.param<double>("init_y",_init_y, 0.0);
