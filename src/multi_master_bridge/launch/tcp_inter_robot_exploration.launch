@@ -13,8 +13,8 @@
         y: -0.854292340825
 
         BOT
-        x: -0.516374336628
-        y: -0.816928216136
+        x: -0.839603688789
+        y: --0.854292340825
     -->
      <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
     
