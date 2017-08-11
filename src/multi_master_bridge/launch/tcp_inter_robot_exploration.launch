@@ -16,7 +16,7 @@
     <node pkg="multi_master_bridge" type="beacon" respawn="false" name="beacon" output="screen"> 
         <param name="broadcast_to" value="$(arg port)"/>
         <param name="broadcast_interface" value="$(arg iface)"/>
-        <param name="refresh_rate" value="2"/>
+        <param name="refresh_rate" value="1"/>
     </node>
   
     <node pkg="multi_master_bridge" type="robot_discover" respawn="false" name="robot_discover" output="screen"> 
