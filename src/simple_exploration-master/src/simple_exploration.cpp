@@ -40,10 +40,10 @@ bool PhrontiersCallback(const sensor_msgs::PointCloud::ConstPtr& msg){
     float dx, dy;
     if (!getingPose)
     {
-        /*int r = rand() % pc_size;
+        int r = rand() % pc_size;
         cout<<"Choosing the next goal: "<<r<<endl;
-        frontier = msg->points[r];*/
-         for(int i=0;i<pc_size;i++)
+        frontier = msg->points[r];
+/*      for(int i=0;i<pc_size;i++)
         {
             dx=robot_cur_pose.pose.position.x-msg->points[i].x;
             dy=robot_cur_pose.pose.position.y-msg->points[i].y;
@@ -52,7 +52,7 @@ bool PhrontiersCallback(const sensor_msgs::PointCloud::ConstPtr& msg){
                 frontier = msg->points[i];
                 dist = sqrt(dx*dx+dy*dy);
             }
-        }
+        }*/
     }
 }
 bool closeToGoal()
