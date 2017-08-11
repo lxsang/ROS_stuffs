@@ -1,8 +1,8 @@
 <launch>
     <arg name="iface" default="wlo1" />
     <arg name="port" default="9196" />
-    <arg name="init_x" default="0.839603688789"/>
-    <arg name="init_y" default="-0.854292340825"/>
+    <arg name="init_x" default="0.84"/>
+    <arg name="init_y" default="-1.03"/>
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
     <arg name="map_update" default="/map_update"/>
@@ -14,7 +14,7 @@
 
         BOT
         x: -0.839603688789
-        y: --0.854292340825
+        y: -0.854292340825
     -->
      <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
     
@@ -106,7 +106,7 @@
         map_topic: /map
         subscribe_to_updates: true 
       inflation:
-        inflation_radius: 0.30
+        inflation_radius: 0.25
 
     </rosparam>
   </node>
