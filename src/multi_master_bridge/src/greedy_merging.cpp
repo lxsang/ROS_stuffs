@@ -180,6 +180,7 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     // publish the update
     map_update_pub.publish(update);
     // merge go here
+    ROS_INFO("greedy_local_merge: %d",(int)greedy_local_merge);
     merge_map(my_pose,update.x, update.y, update.map, greedy_local_merge);
     ROS_INFO("Merged");
 }
