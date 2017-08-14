@@ -43,6 +43,7 @@
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_other_topic" value="/other_map"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="greedy_local_merge" value="false"/>
     </node>
 
      <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
@@ -106,7 +107,7 @@
         map_topic: /map
         subscribe_to_updates: true 
       inflation:
-        inflation_radius: 0.25
+        inflation_radius: 0.15
 
     </rosparam>
   </node>

@@ -7,6 +7,7 @@
 
 std::string other_map_,my_map_,merged_map_topic,map_update_,map_other_;
 nav_msgs::OccupancyGridPtr global_map;
+bool greedy_local_merge;
 geometry_msgs::Pose my_pose;
 ros::Publisher  global_map_pub;
 ros::Publisher  other_map_pub;
@@ -179,7 +180,7 @@ void merge_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     // publish the update
     map_update_pub.publish(update);
     // merge go here
-    merge_map(my_pose,update.x, update.y, update.map, true);
+    merge_map(my_pose,update.x, update.y, update.map, greedy_local_merge);
     ROS_INFO("Merged");
 }
 void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
@@ -201,6 +202,7 @@ int main(int argc, char** argv)
     n.param<std::string>("map_update_topic",map_update_, "/map_update");
     n.param<std::string>("map_other_topic",map_other_, "/other_map");
     n.param<std::string>("merged_map_topic",merged_map_topic, "/global_map");
+    n.param<bool>("greedy_local_merge",greedy_local_merge, true);
     n.param<double>("init_z",my_pose.position.z, 0.0);
 	n.param<double>("init_x",my_pose.position.x, 0.0);
 	n.param<double>("init_y",my_pose.position.y, 0.0);
