@@ -1,7 +1,7 @@
 <launch>
     <arg name="iface" default="wlo1" />
     <arg name="port" default="9196" />
-    <arg name="init_x" default="0.84"/>
+    <arg name="init_x" default="0.83"/>
     <arg name="init_y" default="-1.03"/>
     <arg name="init_z" default="0.0"/>
     <arg name="neighbor_map" default="/neighbor_map"/>
@@ -43,7 +43,7 @@
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_other_topic" value="/other_map"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
-        <param name="greedy_local_merge" value="false"/>
+        <param name="greedy_local_merge" value="true"/>
     </node>
 
      <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
@@ -57,14 +57,14 @@
         <param name="sending_rate" value="0.5" />
     </node>
 
-    <node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
+    <!--node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
         <param name="publish_to" value="$(arg neighbor_map)"/>
         <param name="network_interface" value="$(arg iface)"/>
         <param name="init_x" value="$(arg init_x)"/>
         <param name="init_y" value="$(arg init_y)"/>
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_topic" value="/local_map"/>
-    </node>
+    </node-->
 
     <!--Exploration-->
 
