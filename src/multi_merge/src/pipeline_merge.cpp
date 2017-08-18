@@ -11,6 +11,7 @@ nav_msgs::OccupancyGridPtr local_map;
 geometry_msgs::Pose my_pose;
 ros::Publisher  global_map_pub;
 ros::Publisher  map_update_pub;
+ros::Publisher  visiblepub;
 std::map<std::string,  multi_master_bridge::MapData> pipeline;
 
 void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs::Pose &delta, double resolution) {
@@ -145,6 +146,10 @@ int get_visible_zone(multi_master_bridge::MapData* data,const nav_msgs::Occupanc
     int h = y1 - y;
     data->x = x;
     data->y = y;
+    data->map.header = msg->header;
+    data->map.info = msg->info;
+    data->map.info.width = w;
+    data->map.info.height = h;
      ROS_INFO("update zone (%d,%d) (%d,%d)",x, y,w,h);
     data->map.data.resize(w*h,UNKNOWN);
     // copy the update zone to the update map
@@ -164,6 +169,7 @@ void register_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
         visibledata.position = my_pose.position;
         ROS_INFO("Local update available");
         map_update_pub.publish(visibledata);
+        visiblepub.publish(visibledata.map);
         local_map.reset(new nav_msgs::OccupancyGrid(*msg)); 
     }
     else
@@ -214,6 +220,7 @@ int main(int argc, char** argv)
     // publisher register
     global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
     map_update_pub = n.advertise<multi_master_bridge::MapData>(map_update_, 50, true);
+    visiblepub = n.advertise<nav_msgs::OccupancyGrid>("/visiblearea", 50, true);
     ros::Rate r(1);
     while(ros::ok())
     {
