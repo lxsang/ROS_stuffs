@@ -32,10 +32,10 @@ void send_newmap(const multi_master_bridge::MapData::ConstPtr& msg)
 	
  	multi_master_bridge::MapData* data = new  multi_master_bridge::MapData(*msg);
 	
-	data->position.x = _init_x;
-	data->position.y = _init_y;
-	data->position.z = _init_z;
-
+	//data->position.x = _init_x;
+	//data->position.y = _init_y;
+	//data->position.z = _init_z;
+	data->ip = string(inet_ntoa(id.ip));
 	hp.consume((void*)data);
 	struct portal_data_t d = hp.getPortalDataFor(inet_ntoa(id.ip));
 	d.publish_to = (char*)publish_to.c_str();
@@ -43,7 +43,7 @@ void send_newmap(const multi_master_bridge::MapData::ConstPtr& msg)
 	//send data to all active neighbour
 	for(int i = 0; i < neighbors.size;i++ )
 	{
-		if(neighbors.list[i].status != -1 && neighbors.list[i].status != 1)
+		if(neighbors.list[i].status != -1 ) //&& neighbors.list[i].status != 1
 		{
 			ROS_INFO("Feed map to %s (%s):%d", neighbors.list[i].ip.c_str(),  neighbors.list[i].name.c_str() , neighbors.list[i].port);
 			teleport_raw_data( neighbors.list[i].ip.c_str(), neighbors.list[i].port,d);
@@ -60,9 +60,9 @@ int main(int argc, char **argv)
 	n.param<std::string>("publish_to",publish_to, "/other_map");
 	n.param<std::string>("network_interface",_interface, "wlan0");
 	n.param<std::string>("map_update_topic",map_update_, "/map_update");
-	n.param<double>("init_z",_init_z, 0.0);
-	n.param<double>("init_x",_init_x, 0.0);
-	n.param<double>("init_y",_init_y, 0.0);
+	//n.param<double>("init_z",_init_z, 0.0);
+	//n.param<double>("init_x",_init_x, 0.0);
+	//n.param<double>("init_y",_init_y, 0.0);
 	n.param<double>("sending_rate",_sending_rate, 1.0);
 	neighbors.size = 0;
 	//pub = n.advertise<nav_msgs::OccupancyGrid>("other_map", 1000);

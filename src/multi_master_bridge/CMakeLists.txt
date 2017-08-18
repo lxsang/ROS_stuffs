@@ -175,22 +175,21 @@ add_executable(udp_broadcast
 add_executable(udp_dog
   src/udp_dog.cpp
 )
-add_executable(map_merging
-  src/greedy_merging.cpp
-)
+
 
 add_executable(init_map_for_newcommer
   src/init_map_feed.cpp
 )
 
-target_link_libraries(beacon wdog ${catkin_LIBRARIES})
+target_link_libraries(wdog   ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(beacon wdog  ${catkin_LIBRARIES})
 target_link_libraries(robot_discover wdog ${catkin_LIBRARIES})
 target_link_libraries(portal wdog ${catkin_LIBRARIES})
 target_link_libraries(map_feeding wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_broadcast wdog ${catkin_LIBRARIES})
 target_link_libraries(udp_dog wdog ${catkin_LIBRARIES})
-target_link_libraries(map_merging wdog ${catkin_LIBRARIES})
 target_link_libraries(init_map_for_newcommer wdog ${catkin_LIBRARIES})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

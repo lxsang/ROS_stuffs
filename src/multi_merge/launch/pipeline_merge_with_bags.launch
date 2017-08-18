@@ -1,0 +1,15 @@
+<launch>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock $(find multi_merge)/bags/bag_zero.bag">
+    </node>
+
+    <node pkg="rosbag" type="play" name="player1" output="screen" args="--clock $(find multi_merge)/bags/bag_bot.bag">
+        <remap from="/local_map" to = "/local_map_1"/>
+    </node>
+    <node pkg="rosbag" type="play" name="player2" output="screen" args="--clock $(find multi_merge)/bags/bag_top.bag">
+        <remap from="/local_map" to = "/local_map_2"/>
+    </node>
+
+    <node name="pipeline_merging" pkg="multi_merge" type="pipeline_merging"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_merge)/launch/bag_view.rviz"/>
+</launch>

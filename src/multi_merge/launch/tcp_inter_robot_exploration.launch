@@ -1,0 +1,130 @@
+<launch>
+    <arg name="iface" default="wlo1" />
+    <arg name="port" default="9196" />
+    <arg name="init_x" default="0.83"/>
+    <arg name="init_y" default="-1.03"/>
+    <arg name="init_z" default="0.0"/>
+    <arg name="neighbor_map" default="/neighbor_map"/>
+    <arg name="map_update" default="/map_update"/>
+    <arg name = "global_map_topic" default="/map" />
+    <!--
+        TOP
+        x: 0.839603688789
+        y: -0.854292340825
+
+        BOT
+        x: -0.839603688789
+        y: -0.854292340825
+    -->
+     <!--include file="$(find multi_master_bridge)/launch/gmapping.launch" /-->
+    
+    <node pkg="multi_master_bridge" type="portal" respawn="false" name="portal" output="screen" launch-prefix="" /> 
+
+
+    <node pkg="multi_master_bridge" type="beacon" respawn="false" name="beacon" output="screen"> 
+        <param name="broadcast_to" value="$(arg port)"/>
+        <param name="broadcast_interface" value="$(arg iface)"/>
+        <param name="refresh_rate" value="1"/>
+    </node>
+  
+    <node pkg="multi_master_bridge" type="robot_discover" respawn="false" name="robot_discover" output="screen"> 
+        <param name="listen_to" value="$(arg port)"/>
+         <param name="robot_decay_time_s" value="5"/>
+        <param name="listen_interface" value="$(arg iface)"/>
+    </node>
+
+     <!--node pkg="multi_merge" type="map_merging" respawn="false" name="map_merging" output="screen" launch-prefix="">
+        <param name="other_map" value="$(arg neighbor_map)"/>
+        <param name="my_map" value="/local_map"/>
+        <param name="merged_map_topic" value="$(arg global_map_topic)"/>
+        <param name="init_x" value="$(arg init_x)"/>
+        <param name="init_y" value="$(arg init_y)"/>
+        <param name="init_z" value="$(arg init_z)"/>
+        <param name="map_other_topic" value="/other_map"/>
+        <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="greedy_local_merge" value="false"/>
+    </node-->
+    <node pkg="multi_merge" type="pipeline_merging" respawn="false" name="pipeline_merging" output="screen" launch-prefix="">
+        <param name="other_map" value="$(arg neighbor_map)"/>
+        <param name="my_map" value="/local_map"/>
+        <param name="merged_map_topic" value="$(arg global_map_topic)"/>
+        <param name="init_x" value="$(arg init_x)"/>
+        <param name="init_y" value="$(arg init_y)"/>
+        <param name="init_z" value="$(arg init_z)"/>
+        <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="furious_merge" value="false"/>
+    </node>
+     <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
+     <!-- gdb -ex run ~~args -->
+        <param name="publish_to" value="$(arg neighbor_map)"/>
+        <param name="network_interface" value="$(arg iface)"/>
+        <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="sending_rate" value="0.5" />
+    </node>
+
+    <!--node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
+        <param name="publish_to" value="$(arg neighbor_map)"/>
+        <param name="network_interface" value="$(arg iface)"/>
+        <param name="init_x" value="$(arg init_x)"/>
+        <param name="init_y" value="$(arg init_y)"/>
+        <param name="init_z" value="$(arg init_z)"/>
+        <param name="map_topic" value="/local_map"/>
+    </node-->
+
+    <!--Exploration-->
+
+  <include file="$(find kobuki_node)/launch/robot_with_tf.launch" />
+   <node  pkg="urg_node" type="urg_node" name="urg_node" >
+    <param name="angle_min" value="-1.6"/>
+    <param name="angle_max" value="1.6"/>
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0.110 0 0.02478 0 0 0 1 base_link laser 50" />
+    <include file="$(find turtlebot_car)/launch/gmapping.launch" />
+  <!--include file="$(find turtlebot_car)/launch/move_base.launch" /-->
+
+  <node pkg="pose_path_publisher" type="pose_path_publisher" name="pose_path_publisher" output="screen">
+  	<!-- the frame where the robot pose and path will be exprese: ONLY odom or map -->
+        <param name="target_frame_name" value="map" />
+        <!-- the output topics names, puting an empty name ("") mean topic will not be published (DO NOT EMPTY BOTH PLZ.!)-->
+        <param name="pose_topic_name" value="posegmapping" />
+        <param name="path_topic_name" value="" />
+        <param name="publish_frequency_" value="10.0" />
+  </node>
+  <!--used to compute frontiers by   rosrun phrontier_exploration headless phrontier_explorationpackage_extract_frontiers -->
+  <node pkg="costmap_2d" type="costmap_2d_node" name="costmap_for_exploration_global">
+    
+    <rosparam ns="costmap" subst_value="true">
+      global_frame: /map
+      robot_base_frame: /base_link
+      update_frequency: 0.2
+      publish_frequency: 0.2
+      rolling_window: false
+      always_send_full_costmap: true
+
+      # Map management parameters
+      unknown_cost_value: 255
+      
+      robot_radius: 0.25
+      plugins: 
+        - {name: static, type: "costmap_2d::StaticLayer"}
+        - {name: inflation,        type: "costmap_2d::InflationLayer"}  
+      static:
+        #Can pull data from gmapping, map_server or a non-rolling costmap            
+        map_topic: /map
+        subscribe_to_updates: true 
+      inflation:
+        inflation_radius: 0.15
+
+    </rosparam>
+  </node>
+  
+  <node pkg="phrontier_exploration" type="headless" name="exploration_global" args="phrontier_explorationpackage_extract_frontiers_bis">
+    <param name="map_topic" value="/costmap_for_exploration_global/costmap/costmap"/>
+    <param name="frontier_topic" value="phrontier_global"/>
+  </node>
+
+    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
+    </node-->
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_merge)/launch/exploration.rviz"/>
+</launch>

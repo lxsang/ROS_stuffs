@@ -14,12 +14,18 @@ void MapDataHelper::rawToRosMsg(uint8_t* data)
     PointHelper ph;
     OccupancyGridHelper op;
     ph.consume(data,-1);
-    memcpy(&ptr->x,data + ph.rawsize(), sizeof(int));
-    memcpy(&ptr->y, data + ph.rawsize() + sizeof(int), sizeof(int));
-    op.consume(data+ ph.rawsize() + 2*sizeof(int),-1);
+    int slen;
+   
+    memcpy(&slen, data  + ph.rawsize(), sizeof(int));
+    char* ip = (char*) malloc(slen);
+    memcpy(ip, data +  ph.rawsize() + sizeof(int), slen );
+    ptr->ip = string(ip);
+    memcpy(&ptr->x,data + ph.rawsize() + slen + sizeof(int), sizeof(int));
+    memcpy(&ptr->y, data + ph.rawsize() + slen + 2*sizeof(int), sizeof(int));
+    op.consume(data+ ph.rawsize() + slen  + 3*sizeof(int),-1);
     ptr->position = *((geometry_msgs::Point*)ph.msg());
     ptr->map = *((nav_msgs::OccupancyGrid*)op.msg());
-    _rawsize = ph.rawsize() + op.rawsize() + 2*sizeof(int);
+    _rawsize = ph.rawsize() + op.rawsize() + slen + 3*sizeof(int);
     _msg = (void*) ptr; 
 }
 int MapDataHelper::rosMsgToRaw(uint8_t** data)
@@ -34,13 +40,16 @@ int MapDataHelper::rosMsgToRaw(uint8_t** data)
     uint8_t* praw,*oraw;
     int plen = ph.raw(&praw);
     int olen = oh.raw(&oraw);
+    int slen = ptr->ip.size();
    // ROS_INFO("Length %d %d\n",plen,olen);
-    *data = (uint8_t*) malloc(plen+olen + 2*sizeof(int));
+    *data = (uint8_t*) malloc(plen+olen + slen + 3*sizeof(int));
     memcpy(*data,praw,plen);
-    memcpy(*data + plen, &ptr->x,sizeof(int));
-    memcpy(*data + plen + sizeof(int), &ptr->y, sizeof(int));
-    memcpy(*data + plen + 2*sizeof(int),oraw,olen);
+    memcpy(*data + plen, &slen,sizeof(int));
+    memcpy(*data + plen + sizeof(int),ptr->ip.c_str(), slen);
+    memcpy(*data + plen +  slen + sizeof(int), &ptr->x,sizeof(int));
+    memcpy(*data + plen +  slen + 2*sizeof(int), &ptr->y, sizeof(int));
+    memcpy(*data + plen +  slen + 3*sizeof(int),oraw,olen);
     //conversion code here
-    return plen + olen + 2*sizeof(int);
+    return plen + olen + slen + 3*sizeof(int);
 }
 
