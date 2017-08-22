@@ -1,0 +1,20 @@
+<launch>
+<include file="$(find cartographer_turtlebot)/launch/turtlebot_urg_lidar_2d.launch">
+</include>
+
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0.110 0 0.02478 0 0 0 1 base_link laser 50" />
+
+  <!-- joystick -->
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="joy_node/dev" value="/dev/input/js0"/>
+  </node>
+  <include file="$(find turtlebot_teleop)/launch/xbox360_teleop.launch"/>
+  <node pkg="multi_merge" type="map_threshold" respawn="false" name="map_threshold" output="screen" launch-prefix="">
+        <param name="th_value" value="60"/>
+        <param name="map_in_topic" value="/pmap"/>
+        <param name="map_out_topic" value="/local_map"/>
+        <param name="map_width_m" value="60"/>
+        <param name="map_height_m" value="60"/>
+        <param name="map_resolution" value="0.05"/>
+    </node>
+</launch>

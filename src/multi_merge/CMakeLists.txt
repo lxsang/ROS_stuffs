@@ -167,7 +167,11 @@ add_executable(map_to_image
 add_executable(pipeline_merging
   src/pipeline_merge.cpp
 )
+add_executable(map_threshold
+  src/map_threshold.cpp
+)
 target_link_libraries(map_merging  ${catkin_LIBRARIES})
+target_link_libraries(map_threshold  ${catkin_LIBRARIES})
 target_link_libraries(pipeline_merging  ${catkin_LIBRARIES})
 target_link_libraries(map_to_image  ${OpenCV_LIBS} ${catkin_LIBRARIES})
 

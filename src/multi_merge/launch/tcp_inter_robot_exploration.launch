@@ -59,7 +59,7 @@
         <param name="publish_to" value="$(arg neighbor_map)"/>
         <param name="network_interface" value="$(arg iface)"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
-        <param name="sending_rate" value="0.5" />
+        <param name="sending_rate" value="0.2" />
     </node>
 
     <!--node pkg="multi_master_bridge" type="init_map_for_newcommer" respawn="false" name="init_map_for_newcommer" output="screen" launch-prefix="">
@@ -73,14 +73,17 @@
 
     <!--Exploration-->
 
-  <include file="$(find kobuki_node)/launch/robot_with_tf.launch" />
+  <!--include file="$(find kobuki_node)/launch/robot_with_tf.launch" />
    <node  pkg="urg_node" type="urg_node" name="urg_node" >
     <param name="angle_min" value="-1.6"/>
     <param name="angle_max" value="1.6"/>
   </node>
   <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0.110 0 0.02478 0 0 0 1 base_link laser 50" />
-    <include file="$(find turtlebot_car)/launch/gmapping.launch" />
-  <!--include file="$(find turtlebot_car)/launch/move_base.launch" /-->
+  <include file="$(find turtlebot_car)/launch/gmapping.launch" />
+  <include file="$(find turtlebot_car)/launch/move_base.launch" /-->
+  
+    <include file="$(find multi_merge)/launch/cartographer_minimal.launch" />
+   <include file="$(find turtlebot_car)/launch/move_base.launch" />
 
   <node pkg="pose_path_publisher" type="pose_path_publisher" name="pose_path_publisher" output="screen">
   	<!-- the frame where the robot pose and path will be exprese: ONLY odom or map -->
@@ -123,8 +126,8 @@
     <param name="frontier_topic" value="phrontier_global"/>
   </node>
 
-    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
-    </node-->
+    <node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
+    </node>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_merge)/launch/exploration.rviz"/>
 </launch>

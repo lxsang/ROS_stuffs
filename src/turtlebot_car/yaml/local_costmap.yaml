@@ -10,6 +10,6 @@ local_costmap:
   height: 6.0
   origin_x: 0.0
   origin_y: 0.0
-  inflation_radius: 0.4
+  inflation_radius: 0.25
   observation_sources: base_scan
   base_scan: {sensor_frame: laser, data_type: LaserScan, topic: /scan, marking: true, clearing: true}
