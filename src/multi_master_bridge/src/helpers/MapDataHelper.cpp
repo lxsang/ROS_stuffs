@@ -17,8 +17,9 @@ void MapDataHelper::rawToRosMsg(uint8_t* data)
     int slen;
    
     memcpy(&slen, data  + ph.rawsize(), sizeof(int));
-    char* ip = (char*) malloc(slen);
+    char* ip = (char*) malloc(slen + 1);
     memcpy(ip, data +  ph.rawsize() + sizeof(int), slen );
+    ip[slen] = '\0';
     ptr->ip = string(ip);
     memcpy(&ptr->x,data + ph.rawsize() + slen + sizeof(int), sizeof(int));
     memcpy(&ptr->y, data + ph.rawsize() + slen + 2*sizeof(int), sizeof(int));
