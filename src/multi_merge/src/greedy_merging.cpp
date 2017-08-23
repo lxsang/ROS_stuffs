@@ -5,7 +5,7 @@
 
 #define UNKNOWN -1
 std::string other_map_,my_map_,merged_map_topic,map_update_;
-bool furious_merge, has_local;
+bool furious_merge;
 nav_msgs::OccupancyGrid global_map;
 nav_msgs::OccupancyGridPtr local_map;
 geometry_msgs::Pose my_pose;

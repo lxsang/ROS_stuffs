@@ -31,7 +31,7 @@
         <param name="listen_interface" value="$(arg iface)"/>
     </node>
 
-    <node pkg="multi_merge" type="greedy_merging" respawn="false" name="greedy_merging" output="screen" launch-prefix="">
+    <!--node pkg="multi_merge" type="greedy_merging" respawn="false" name="greedy_merging" output="screen" launch-prefix="">
         <param name="other_map" value="$(arg neighbor_map)"/>
         <param name="my_map" value="/local_map"/>
         <param name="merged_map_topic" value="$(arg global_map_topic)"/>
@@ -43,7 +43,21 @@
         <param name="map_width_m" value="60"/>
         <param name="map_height_m" value="60"/>
         <param name="map_resolution" value="0.05"/>
+    </node-->
+
+    <node pkg="multi_merge" type="probabilistic_merging" respawn="false" name="probabilistic_merging" output="screen" launch-prefix="">
+        <param name="other_map" value="$(arg neighbor_map)"/>
+        <param name="my_map" value="/pmap"/>
+        <param name="merged_map_topic" value="$(arg global_map_topic)"/>
+        <param name="init_x" value="$(arg init_x)"/>
+        <param name="init_y" value="$(arg init_y)"/>
+        <param name="init_z" value="$(arg init_z)"/>
+        <param name="map_update_topic" value="$(arg map_update)"/>
+        <param name="map_width_m" value="60"/>
+        <param name="map_height_m" value="60"/>
+        <param name="map_resolution" value="0.05"/>
     </node>
+
      <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
      <!-- gdb -ex run ~~args -->
         <param name="publish_to" value="$(arg neighbor_map)"/>
@@ -103,8 +117,8 @@
     <param name="frontier_topic" value="phrontier_global"/>
   </node>
 
-    <node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
-    </node>
+    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
+    </node-->
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_merge)/launch/exploration.rviz"/>
 </launch>

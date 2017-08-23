@@ -161,6 +161,12 @@ include_directories(
 add_executable(greedy_merging
   src/greedy_merging.cpp
 )
+add_executable(probabilistic_merging
+  src/probabilistic_merging.cpp
+)
+add_executable(probabilistic_merging_ex
+  src/probabilistic_merging_ex.cpp
+)
 add_executable(map_to_image
   src/map_to_image.cpp
 )
@@ -168,6 +174,8 @@ add_executable(map_threshold
   src/map_threshold.cpp
 )
 target_link_libraries(greedy_merging  ${catkin_LIBRARIES})
+target_link_libraries(probabilistic_merging  ${catkin_LIBRARIES})
+target_link_libraries(probabilistic_merging_ex  ${catkin_LIBRARIES})
 target_link_libraries(map_threshold  ${catkin_LIBRARIES})
 target_link_libraries(map_to_image  ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
