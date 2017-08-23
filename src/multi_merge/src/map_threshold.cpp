@@ -15,8 +15,8 @@ void map_threshold(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     th_map.header = msg->header;
     th_map.info.map_load_time = msg->info.map_load_time;
     // now calculate the transformation of the maps
-    int off_x = abs(ceil((th_map.info.origin.position.x - msg->info.origin.position.x)/th_map.info.resolution));
-    int off_y = abs(ceil((th_map.info.origin.position.y - msg->info.origin.position.y)/th_map.info.resolution));
+    int off_x = abs(floor((th_map.info.origin.position.x - msg->info.origin.position.x)/th_map.info.resolution));
+    int off_y = abs(floor((th_map.info.origin.position.y - msg->info.origin.position.y)/th_map.info.resolution));
     std::fill(th_map.data.begin(), th_map.data.end(), -1);
     //ROS_INFO("offset is (%d, %d) for height (%d, %d)", off_x, off_y, th_map.info.height, msg->info.height);
     for(int i= 0;i < msg->info.width ; i++)
@@ -40,8 +40,8 @@ int main(int argc, char** argv)
     n.param<double>("map_resolution",map_resolution_, 0.05);
     n.param<std::string>("map_in_topic",map_in_topic_, "/map");
     n.param<std::string>("map_out_topic",map_out_topic_, "/threshold_map");
-    int w =  ceil((map_width_m_ - 1)/map_resolution_);
-    int h = ceil((map_height_m_ - 1)/map_resolution_);
+    int w =  floor((map_width_m_ )/map_resolution_);
+    int h = floor((map_height_m_ )/map_resolution_);
     th_map.data.resize(w*h,-1);
     //ROS_INFO("map size (%d, %d)", w, h);
     th_map.info.width = w;
