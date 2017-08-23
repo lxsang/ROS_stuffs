@@ -36,9 +36,4 @@
     <param name="joy_node/dev" value="/dev/input/js0"/>
   </node>
   <include file="$(find turtlebot_teleop)/launch/xbox360_teleop.launch"/>
-  <node pkg="multi_merge" type="map_threshold" respawn="false" name="map_threshold" output="screen" launch-prefix="">
-        <param name="th_value" value="60"/>
-        <param name="map_in_topic" value="/pmap"/>
-        <param name="map_out_topic" value="/local_map"/>
-    </node>
 </launch>
