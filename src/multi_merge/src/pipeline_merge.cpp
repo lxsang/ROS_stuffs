@@ -6,14 +6,13 @@
 #define UNKNOWN -1
 std::string other_map_,my_map_,merged_map_topic,map_update_;
 bool furious_merge, has_local;
-nav_msgs::OccupancyGridPtr global_map;
+nav_msgs::OccupancyGrid global_map;
 nav_msgs::OccupancyGridPtr local_map;
 geometry_msgs::Pose my_pose;
 ros::Publisher  global_map_pub;
 ros::Publisher  map_update_pub;
-ros::Publisher  visiblepub;
 std::map<std::string,  multi_master_bridge::MapData> pipeline;
-
+double map_width_m_, map_height_m_, map_resolution_;
 void getRelativePose(geometry_msgs::Pose p, geometry_msgs::Pose q, geometry_msgs::Pose &delta, double resolution) {
   
     delta.position.x = round((p.position.x - q.position.x) / resolution);
@@ -49,20 +48,19 @@ void greedyMerging(int delta_x, int delta_y, const nav_msgs::OccupancyGrid their
 void greedyMerging(int delta_x, int delta_y, int x, int y, const nav_msgs::OccupancyGrid their_map, bool furious) {
   for(int i = 0; i < (int)their_map.info.width; i++) {
     for(int j = 0; j < (int)their_map.info.height; j++) {
-        if(i+delta_x + x  >= 0 && i+delta_x + x  < (int)global_map->info.width &&
-	        j+delta_y + y  >= 0 && j+delta_y + y  < (int)global_map->info.height) {
-            int mycell = i + delta_x + x +(j + delta_y + y)*(int)global_map->info.width;
+        if(i+delta_x + x  >= 0 && i+delta_x + x  < (int)global_map.info.width &&
+	        j+delta_y + y  >= 0 && j+delta_y + y  < (int)global_map.info.height) {
+            int mycell = i + delta_x + x +(j + delta_y + y)*(int)global_map.info.width;
             int theircell = i + j*(int)their_map.info.width;
-            if((int)global_map->data[mycell] == UNKNOWN || ( furious && (int)their_map.data[theircell] != UNKNOWN && (int)global_map->data[mycell] != (int)their_map.data[theircell] ))
+            if((int)global_map.data[mycell] == UNKNOWN || ( furious && (int)their_map.data[theircell] != UNKNOWN && (int)global_map.data[mycell] != (int)their_map.data[theircell] ))
             {
                 //ROS_INFO("merging...");
-            global_map->data[mycell] = their_map.data[theircell];
+            global_map.data[mycell] = their_map.data[theircell];
             }
         }
     }
   }
 }
-
 void mege_pipeline(bool furious)
 {
     geometry_msgs::Pose delta;
@@ -71,25 +69,42 @@ void mege_pipeline(bool furious)
         return;
     }
     std::map<std::string,  multi_master_bridge::MapData>::iterator it;
-    global_map.reset(new nav_msgs::OccupancyGrid(*local_map));
+    geometry_msgs::Pose offset;
+    getRelativePose(global_map.info.origin, local_map->info.origin, offset, local_map->info.resolution);
+    offset.position.x = abs(offset.position.x);
+    offset.position.y = abs(offset.position.y);
+
+    // fill global map with local content
+    std::fill(global_map.data.begin(), global_map.data.end(), -1);
+    for(int i= 0;i < local_map->info.width ; i++)
+        for(int j = 0; j < local_map->info.height; j++)
+            if(local_map->data[i + j*local_map->info.width] != -1)
+                global_map.data[(offset.position.y +  j)*global_map.info.width + offset.position.x + i] = local_map->data[i + j*local_map->info.width];
+        
+
+    //global_map.reset(new nav_msgs::OccupancyGrid(*local_map));
     for ( it = pipeline.begin(); it != pipeline.end(); it++ )
     {
         geometry_msgs::Pose p;
         p.position = it->second.position;
         ROS_INFO("mergin map of %s with init pose (%f,%f,%f)",it->first.c_str(), it->second.position.x,it->second.position.y,it->second.position.z);
         ROS_INFO("Get relative position");
-        getRelativePose(p,my_pose, delta,global_map->info.resolution);
+        getRelativePose(p,my_pose, delta,global_map.info.resolution);
+        ROS_INFO("Get map offset");
+        getRelativePose(global_map.info.origin,it->second.map.info.origin,offset,global_map.info.resolution);
+        offset.position.x = abs(offset.position.x);
+        offset.position.y = abs(offset.position.y);
         ROS_INFO("merging");
-        greedyMerging(round(delta.position.x), round(delta.position.y),it->second.x,it->second.y, it->second.map,furious);
+        greedyMerging(round(delta.position.x), round(delta.position.y),offset.position.x,offset.position.y, it->second.map,furious);
 
     }
     ros::Time now = ros::Time::now();
-    global_map->info.map_load_time = now;
-    global_map->header.stamp = now;
+    global_map.info.map_load_time = now;
+    global_map.header.stamp = now;
     ROS_INFO("Publishing global map");
-    global_map_pub.publish(*global_map);
+    global_map_pub.publish(global_map);
 }
-
+/*
 int get_visible_zone(multi_master_bridge::MapData* data,const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
     int x = -1, y = -1,x1 = -1, y1 = -1, i,j;
@@ -158,36 +173,19 @@ int get_visible_zone(multi_master_bridge::MapData* data,const nav_msgs::Occupanc
             data->map.data[i+j*w] = msg->data[ x + i + (j+y)*msg->info.width ];
     return 1;
 }
-
+*/
 void register_local_map(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 {
     ROS_INFO("Local map found");
     multi_master_bridge::MapData visibledata;
-    
-    if(get_visible_zone(&visibledata, msg))
-    {
-        visibledata.position = my_pose.position;
-        ROS_INFO("Local update available");
-        map_update_pub.publish(visibledata);
-        visiblepub.publish(visibledata.map);
-        local_map.reset(new nav_msgs::OccupancyGrid(*msg)); 
-    }
-    else
-    {
-        ROS_INFO("No local update available");
-    }
+    visibledata.position = my_pose.position;
+    visibledata.x = 0;
+    visibledata.y = 0;
+    visibledata.map = *msg;
+    map_update_pub.publish(visibledata);
+    local_map.reset(new nav_msgs::OccupancyGrid(*msg)); 
 }
-/*
-void merge_their_map(const multi_master_bridge::MapData::ConstPtr& msg)
-{
-    geometry_msgs::Pose p;
-    p.position = msg->position;
-    ROS_INFO("Merging map from another robot");
-    ROS_INFO("Their init pose is [%f,%f,%f]\n",p.position.x,p.position.y, p.position.z);
-    ROS_INFO("update zone (%d,%d) (%d,%d)",msg->x, msg->y,msg->map.info.width,msg->map.info.height);
-    other_map_pub.publish(msg->map);
-    merge_map(p,msg->x, msg->y,msg->map, false);
-}*/
+
 void register_neighbor_map(const multi_master_bridge::MapData::ConstPtr& msg)
 {
     ROS_INFO("Registering neighbor map");
@@ -207,6 +205,22 @@ int main(int argc, char** argv)
     n.param<double>("init_z",my_pose.position.z, 0.0);
 	n.param<double>("init_x",my_pose.position.x, 0.0);
 	n.param<double>("init_y",my_pose.position.y, 0.0);
+    n.param<double>("map_width_m",map_width_m_, 10.0);
+    n.param<double>("map_height_m",map_height_m_, 10.0);
+    n.param<double>("map_resolution",map_resolution_, 0.05);
+    int w =  round((map_width_m_ )/map_resolution_);
+    int h = round((map_height_m_ )/map_resolution_);
+    global_map.data.resize(w*h,-1);
+    global_map.info.width = w;
+    global_map.info.height = h;
+    global_map.info.resolution = map_resolution_;
+    global_map.info.origin.position.x = -map_width_m_/2.0;
+    global_map.info.origin.position.y = -map_height_m_/2.0;
+    global_map.info.origin.position.z = 0.0;
+    global_map.info.origin.orientation.x = 0.0;
+    global_map.info.origin.orientation.y = 0.0;
+    global_map.info.origin.orientation.z = 0.0;
+    global_map.info.origin.orientation.w = 1.0;
     // subscribe to this map
     ROS_INFO("My initial position is [%f,%f,%f]\n",my_pose.position.x,my_pose.position.y, my_pose.position.z);
     ROS_INFO("My Map topic is %s",my_map_.c_str());
@@ -215,12 +229,10 @@ int main(int argc, char** argv)
     ROS_INFO("Furios merge is  %d", furious_merge );
     ros::Subscriber sub = n.subscribe<multi_master_bridge::MapData>(other_map_, 50,&register_neighbor_map);
 	ros::Subscriber sub1 = n.subscribe<nav_msgs::OccupancyGrid>(my_map_, 50,&register_local_map);
-    global_map = nullptr;
     local_map = nullptr;
     // publisher register
     global_map_pub = n.advertise<nav_msgs::OccupancyGrid>(merged_map_topic, 50, true);
     map_update_pub = n.advertise<multi_master_bridge::MapData>(map_update_, 50, true);
-    visiblepub = n.advertise<nav_msgs::OccupancyGrid>("/visiblearea", 50, true);
     ros::Rate r(1);
     while(ros::ok())
     {

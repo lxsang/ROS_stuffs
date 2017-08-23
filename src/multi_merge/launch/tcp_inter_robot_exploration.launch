@@ -53,6 +53,9 @@
         <param name="init_z" value="$(arg init_z)"/>
         <param name="map_update_topic" value="$(arg map_update)"/>
         <param name="furious_merge" value="false"/>
+        <param name="map_width_m" value="60"/>
+        <param name="map_height_m" value="60"/>
+        <param name="map_resolution" value="0.05"/>
     </node>
      <node pkg="multi_master_bridge" type="map_feeding" respawn="false" name="map_exchange" output="screen" launch-prefix="">
      <!-- gdb -ex run ~~args -->
@@ -126,8 +129,8 @@
     <param name="frontier_topic" value="phrontier_global"/>
   </node>
 
-    <node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
-    </node>
+    <!--node pkg="simple_exploration" type="simple_exploration" name="simple_exploration">
+    </node-->
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_merge)/launch/exploration.rviz"/>
 </launch>
