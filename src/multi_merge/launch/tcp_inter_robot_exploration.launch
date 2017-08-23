@@ -83,7 +83,7 @@
   <include file="$(find turtlebot_car)/launch/move_base.launch" /-->
   
     <include file="$(find multi_merge)/launch/cartographer_minimal.launch" />
-   <include file="$(find turtlebot_car)/launch/move_base.launch" />
+    <include file="$(find turtlebot_car)/launch/move_base.launch" />
 
   <node pkg="pose_path_publisher" type="pose_path_publisher" name="pose_path_publisher" output="screen">
   	<!-- the frame where the robot pose and path will be exprese: ONLY odom or map -->
@@ -116,7 +116,7 @@
         map_topic: /map
         subscribe_to_updates: true 
       inflation:
-        inflation_radius: 0.15
+        inflation_radius: 0.3
 
     </rosparam>
   </node>
