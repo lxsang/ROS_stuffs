@@ -158,21 +158,17 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
-add_executable(map_merging
+add_executable(greedy_merging
   src/greedy_merging.cpp
 )
 add_executable(map_to_image
   src/map_to_image.cpp
 )
-add_executable(pipeline_merging
-  src/pipeline_merge.cpp
-)
 add_executable(map_threshold
   src/map_threshold.cpp
 )
-target_link_libraries(map_merging  ${catkin_LIBRARIES})
+target_link_libraries(greedy_merging  ${catkin_LIBRARIES})
 target_link_libraries(map_threshold  ${catkin_LIBRARIES})
-target_link_libraries(pipeline_merging  ${catkin_LIBRARIES})
 target_link_libraries(map_to_image  ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
 ## Specify libraries to link a library or executable target against
